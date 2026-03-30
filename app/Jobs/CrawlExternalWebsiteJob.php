@@ -506,7 +506,7 @@ class CrawlExternalWebsiteJob implements ShouldQueue
             /** @var \Spatie\Browsershot\Browsershot $shot */
             $shot = \Spatie\Browsershot\Browsershot::url($url)
                 ->setNodeBinary(config('services.browsershot.node_binary', 'node'))
-                ->setNpmBinary(config('services.browsershot.npm_binary', 'npm'))
+                ->setNodeModulesPath(base_path('node_modules'))
                 ->userAgent(self::USER_AGENT)
                 ->timeout(15000)
                 ->waitUntilNetworkIdle();

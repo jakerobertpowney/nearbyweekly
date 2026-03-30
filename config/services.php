@@ -50,7 +50,6 @@ return [
         // Used as a fallback in ProbeExternalWebsiteJob for JS-rendered sites.
         'enabled'     => env('BROWSERSHOT_ENABLED', false),
         'node_binary' => env('BROWSERSHOT_NODE_BINARY', 'node'),
-        'npm_binary'  => env('BROWSERSHOT_NPM_BINARY', 'npm'),
     ],
 
     'resend' => [

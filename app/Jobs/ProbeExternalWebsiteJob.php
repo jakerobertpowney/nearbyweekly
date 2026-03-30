@@ -548,7 +548,7 @@ class ProbeExternalWebsiteJob implements ShouldQueue
             /** @var \Spatie\Browsershot\Browsershot $shot */
             $shot = \Spatie\Browsershot\Browsershot::url($url)
                 ->setNodeBinary(config('services.browsershot.node_binary', 'node'))
-                ->setNpmBinary(config('services.browsershot.npm_binary', 'npm'))
+                ->setNodeModulesPath(base_path('node_modules'))
                 ->userAgent('Eventaroo-Bot/1.0 (+https://eventaroo.co.uk/bot)')
                 ->timeout(15000)
                 ->waitUntilNetworkIdle();
