@@ -26,7 +26,7 @@ class UpdatePreferenceRequest extends FormRequest
         return [
             'postcode' => ['required', 'string', 'max:12', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
             'radius_miles' => ['required', Rule::in([5, 10, 25, 50, 100])],
-            'interests' => ['required', 'array', 'min:1'],
+            'interests' => ['required', 'array', 'min:2'],
             'interests.*' => ['required', 'integer', 'exists:interests,id'],
             'newsletter_enabled' => ['required', 'boolean'],
         ];

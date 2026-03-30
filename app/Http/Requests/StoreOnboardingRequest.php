@@ -28,7 +28,7 @@ class StoreOnboardingRequest extends FormRequest
         return [
             'postcode' => ['required', 'string', 'max:12', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
             'radius_miles' => ['required', Rule::in([5, 10, 25, 50, 100])],
-            'interests' => ['required', 'array', 'min:1'],
+            'interests' => ['required', 'array', 'min:2'],
             'interests.*' => ['required', 'integer', 'exists:interests,id'],
             'email' => ['required', 'string', 'email', 'max:255'],
         ];
@@ -43,7 +43,7 @@ class StoreOnboardingRequest extends FormRequest
     {
         return [
             'postcode.regex' => 'Enter a valid UK postcode.',
-            'interests.min' => 'Choose at least one interest so we can tailor your weekly picks.',
+            'interests.min' => 'Choose at least two interests so we can tailor your weekly picks.',
         ];
     }
 

@@ -30,6 +30,7 @@ const props = defineProps<{
 
 const postcodePattern = /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i;
 const postcodeError = ref('');
+const interestsError = ref('');
 
 const form = useForm({
     postcode: props.preferences.postcode ?? '',
@@ -57,7 +58,16 @@ function validatePostcode(): void {
 
 function submit(): void {
     validatePostcode();
-    if (postcodeError.value) return;
+
+    if (form.interests.length < 2) {
+        interestsError.value = form.interests.length === 0
+            ? 'Choose at least two interests so we can tailor your weekly picks.'
+            : 'Pick one more interest — we need at least two to personalise your picks.';
+    } else {
+        interestsError.value = '';
+    }
+
+    if (postcodeError.value || interestsError.value) return;
 
     form.put(PreferenceController.update.url(), {
         preserveScroll: true,
@@ -96,16 +106,21 @@ function submit(): void {
                         v-model="form.interests"
                     />
 
-                    <div v-if="selectedInterests.length > 0" class="flex flex-wrap items-center gap-2">
-                        <span class="text-sm text-slate-400">{{ selectedInterests.length }} selected:</span>
-                        <span
-                            v-for="interest in selectedInterests"
-                            :key="interest.id"
-                            class="rounded-full bg-[#F5EAE3] px-3 py-0.5 text-sm font-medium text-[#6B4535]"
-                        >{{ interest.name }}</span>
+                    <div v-if="selectedInterests.length > 0" class="space-y-3">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-sm text-slate-400">{{ selectedInterests.length }} selected:</span>
+                            <span
+                                v-for="interest in selectedInterests"
+                                :key="interest.id"
+                                class="rounded-full bg-[#F5EAE3] px-3 py-0.5 text-sm font-medium text-[#6B4535]"
+                            >{{ interest.name }}</span>
+                        </div>
+                        <p v-if="selectedInterests.length > 5" class="text-sm text-amber-600">
+                            The more you pick, the less personalised your newsletter will be.
+                        </p>
                     </div>
 
-                    <InputError :message="form.errors.interests" />
+                    <InputError :message="interestsError || form.errors.interests" />
                 </section>
 
                 <!-- Section 2: Location -->

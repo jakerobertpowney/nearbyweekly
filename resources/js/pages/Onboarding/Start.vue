@@ -244,8 +244,10 @@ async function verifyPostcode(): Promise<boolean> {
 async function validateCurrentStep(): Promise<boolean> {
     resetStepErrors();
 
-    if (currentStep.value === 1 && form.interests.length === 0) {
-        stepErrors.interests = 'Choose at least one interest.';
+    if (currentStep.value === 1 && form.interests.length < 2) {
+        stepErrors.interests = form.interests.length === 0
+            ? 'Choose at least two interests to get started.'
+            : 'Pick one more interest — we need at least two to personalise your picks.';
     }
 
     if (currentStep.value === 2 && form.postcode.trim() === '') {
@@ -378,7 +380,7 @@ function radiusDescription(radius: number): string {
 
 const canProceed = computed<boolean>(() => {
     if (currentStep.value === 1) {
-        return form.interests.length > 0;
+        return form.interests.length >= 2;
     }
     if (currentStep.value === 2) {
         return (
@@ -536,13 +538,18 @@ onUnmounted(() => {
                         v-model="form.interests"
                     />
 
-                    <div v-if="form.interests.length > 0" class="flex flex-wrap items-center gap-2">
-                        <span class="text-sm text-slate-400">{{ form.interests.length }} selected:</span>
-                        <span
-                            v-for="interest in selectedInterests"
-                            :key="interest.id"
-                            class="rounded-full bg-[#F5EAE3] px-3 py-0.5 text-sm font-medium text-[#6B4535]"
-                        >{{ interest.name }}</span>
+                    <div v-if="form.interests.length > 0" class="space-y-3">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-sm text-slate-400">{{ form.interests.length }} selected:</span>
+                            <span
+                                v-for="interest in selectedInterests"
+                                :key="interest.id"
+                                class="rounded-full bg-[#F5EAE3] px-3 py-0.5 text-sm font-medium text-[#6B4535]"
+                            >{{ interest.name }}</span>
+                        </div>
+                        <p v-if="form.interests.length > 5" class="text-sm text-amber-600">
+                            The more you pick, the less personalised your newsletter will be.
+                        </p>
                     </div>
 
                     <InputError :message="stepErrors.interests || form.errors.interests" />
