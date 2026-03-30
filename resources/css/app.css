@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 @import 'tailwindcss';
 
 @import 'tw-animate-css';
@@ -10,6 +12,10 @@
 @theme inline {
     --font-sans:
         Instrument Sans, ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+    --font-heading:
+        Poppins, ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
 
@@ -59,6 +65,17 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+
+    --color-brand-primary: var(--brand-primary);
+    --color-brand-primary-hover: var(--brand-primary-hover);
+    --color-brand-soft: var(--brand-soft);
+    --color-brand-accent: var(--brand-accent);
+    --color-brand-surface: var(--brand-surface);
+    --color-brand-surface-deep: var(--brand-surface-deep);
+    --color-brand-border: var(--brand-border);
+    --color-brand-text: var(--brand-text-primary);
+    --color-brand-text-muted: var(--brand-text-muted);
+    --color-brand-text-subtle: var(--brand-text-subtle);
 }
 
 /*
@@ -79,16 +96,6 @@
     }
 }
 
-@layer utilities {
-    body,
-    html {
-        --font-sans:
-            'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
-            'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-            'Noto Color Emoji';
-    }
-}
-
 :root {
     --background: hsl(0 0% 100%);
     --foreground: hsl(0 0% 3.9%);
@@ -96,7 +103,7 @@
     --card-foreground: hsl(0 0% 3.9%);
     --popover: hsl(0 0% 100%);
     --popover-foreground: hsl(0 0% 3.9%);
-    --primary: hsl(0 0% 9%);
+    --primary: hsl(16 56% 50%);           /* #C4623A terracotta */
     --primary-foreground: hsl(0 0% 98%);
     --secondary: hsl(0 0% 92.1%);
     --secondary-foreground: hsl(0 0% 9%);
@@ -108,12 +115,23 @@
     --destructive-foreground: hsl(0 0% 98%);
     --border: hsl(0 0% 92.8%);
     --input: hsl(0 0% 89.8%);
-    --ring: hsl(0 0% 3.9%);
-    --chart-1: hsl(12 76% 61%);
-    --chart-2: hsl(173 58% 39%);
-    --chart-3: hsl(197 37% 24%);
-    --chart-4: hsl(43 74% 66%);
-    --chart-5: hsl(27 87% 67%);
+    --ring: hsl(16 56% 50%);              /* #C4623A focus rings match brand */
+    --chart-1: hsl(16 56% 50%);           /* terracotta primary */
+    --chart-2: hsl(173 58% 39%);          /* teal — complementary */
+    --chart-3: hsl(197 37% 24%);          /* dark blue */
+    --chart-4: hsl(38 59% 58%);           /* warm gold accent */
+    --chart-5: hsl(20 67% 67%);           /* soft coral */
+    /* Brand palette tokens */
+    --brand-primary:       hsl(16 56% 50%);   /* #C4623A */
+    --brand-primary-hover: hsl(16 56% 41%);   /* #A84E2C */
+    --brand-soft:          hsl(20 67% 67%);   /* #E8956D */
+    --brand-accent:        hsl(38 59% 58%);   /* #D4A853 */
+    --brand-surface:       hsl(20 60% 97%);   /* #FDF7F4 */
+    --brand-surface-deep:  hsl(20 47% 93%);   /* #F5EAE3 */
+    --brand-border:        hsl(20 37% 85%);   /* #E8D5C8 */
+    --brand-text-primary:  hsl(22 74% 7%);    /* #1C1109 */
+    --brand-text-muted:    hsl(16 34% 31%);   /* #6B4535 */
+    --brand-text-subtle:   hsl(16 23% 47%);   /* #9C6B54 */
     --radius: 0.5rem;
     --sidebar-background: hsl(0 0% 98%);
     --sidebar-foreground: hsl(240 5.3% 26.1%);
@@ -166,7 +184,19 @@
     * {
         @apply border-border outline-ring/50;
     }
+
+    html,
     body {
         @apply bg-background text-foreground;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--font-heading);
     }
 }

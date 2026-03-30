@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
+// NearbyWeekly branded wordmark — ticket icon in rounded square + text
 </script>
 
 <template>
-    <div
-        class="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground"
-    >
-        <AppLogoIcon class="size-5 fill-current text-white dark:text-black" />
-    </div>
-    <div class="ml-1 grid flex-1 text-left text-sm">
-        <span class="mb-0.5 truncate leading-tight font-semibold"
-            >Laravel Starter Kit</span
-        >
+    <div class="flex items-center gap-3">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-surface border border-brand-border">
+            <img src="/images/logo-icon.svg" alt="Eventaroo" class="h-5 w-auto" />
+        </div>
+        <span class="font-heading text-lg font-bold">
+            <span class="text-brand-text">Nearby</span><span class="text-brand-primary ml-1">Weekly</span>
+        </span>
     </div>
 </template>

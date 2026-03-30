@@ -6,6 +6,7 @@ use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
 class CreateNewUser implements CreatesNewUsers
@@ -19,15 +20,12 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        Validator::make($input, [
-            ...$this->profileRules(),
-            'password' => $this->passwordRules(),
-        ])->validate();
+        Validator::make($input, $this->profileRules())->validate();
 
         return User::create([
             'name' => $input['name'],
             'email' => $input['email'],
-            'password' => $input['password'],
+            'password' => Str::random(40),
         ]);
     }
 }

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nearby Weekly — Logo Preview</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f8f8f8; padding: 40px; }
+    h2 { font-size: 14px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+    .section { margin-bottom: 48px; }
+    .preview-row { display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
+    .preview-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 40px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dark { background: #1C1109; }
+    .brand-surface { background: #FDF7F4; }
+
+    /* Inline SVG logo recreation for reliable rendering */
+    .logo { display: flex; align-items: center; gap: 14px; }
+    .logo-box {
+      width: 48px; height: 48px;
+      background: #F5EAE3;
+      border: 1.5px solid #E8D5C8;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-box svg { width: 24px; height: 24px; }
+    .logo-text { font-size: 24px; font-weight: 700; white-space: nowrap; }
+    .logo-text .nearby { color: #1C1109; }
+    .logo-text .weekly { color: #C4623A; }
+
+    /* Dark variant */
+    .dark .logo-box { background: rgba(245,234,227,0.12); border-color: rgba(232,213,200,0.2); }
+    .dark .logo-text .nearby { color: #FDF7F4; }
+    .dark .logo-text .weekly { color: #E8956D; }
+
+    /* Small variant */
+    .logo.sm .logo-box { width: 36px; height: 36px; border-radius: 9px; }
+    .logo.sm .logo-box svg { width: 18px; height: 18px; }
+    .logo.sm .logo-text { font-size: 18px; }
+
+    /* Large variant */
+    .logo.lg .logo-box { width: 60px; height: 60px; border-radius: 14px; }
+    .logo.lg .logo-box svg { width: 30px; height: 30px; }
+    .logo.lg .logo-text { font-size: 30px; }
+
+    /* Icon only */
+    .icon-only .logo-box { width: 56px; height: 56px; border-radius: 14px; }
+    .icon-only .logo-box svg { width: 28px; height: 28px; }
+    .icon-only.sm .logo-box { width: 32px; height: 32px; border-radius: 8px; }
+    .icon-only.sm .logo-box svg { width: 16px; height: 16px; }
+
+    .swatch-row { display: flex; gap: 12px; margin-top: 8px; }
+    .swatch { width: 48px; height: 48px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.08); }
+    .swatch-label { font-size: 11px; color: #999; margin-top: 4px; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="section">
+    <h2>Full Logo — Light Background</h2>
+    <div class="preview-row">
+      <div class="preview-card">
+        <div class="logo">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
+              <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="nearby">Nearby</span> <span class="weekly">Weekly</span>
+          </div>
+        </div>
+      </div>
+      <div class="preview-card brand-surface">
+        <div class="logo">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
+              <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="nearby">Nearby</span> <span class="weekly">Weekly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Full Logo — Dark Background</h2>
+    <div class="preview-row">
+      <div class="preview-card dark">
+        <div class="logo">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E8956D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
+              <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="nearby">Nearby</span> <span class="weekly">Weekly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Size Variants</h2>
+    <div class="preview-row">
+      <div class="preview-card">
+        <div class="logo sm">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
+              <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="nearby">Nearby</span> <span class="weekly">Weekly</span>
+          </div>
+        </div>
+      </div>
+      <div class="preview-card">
+        <div class="logo lg">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
+              <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="nearby">Nearby</span> <span class="weekly">Weekly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Icon Only</h2>
+    <div class="preview-row">
+      <div class="preview-card">
+        <div class="logo icon-only">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
+              <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="preview-card">
+        <div class="logo icon-only sm">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
+              <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="preview-card dark">
+        <div class="logo icon-only">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E8956D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
+              <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Brand Colors Used</h2>
+    <div class="swatch-row">
+      <div>
+        <div class="swatch" style="background: #C4623A;"></div>
+        <div class="swatch-label">Terracotta<br>#C4623A</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: #1C1109;"></div>
+        <div class="swatch-label">Dark<br>#1C1109</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: #F5EAE3;"></div>
+        <div class="swatch-label">Surface<br>#F5EAE3</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: #E8D5C8;"></div>
+        <div class="swatch-label">Border<br>#E8D5C8</div>
+      </div>
+      <div>
+        <div class="swatch" style="background: #E8956D;"></div>
+        <div class="swatch-label">Coral<br>#E8956D</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

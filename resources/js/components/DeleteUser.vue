@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Form } from '@inertiajs/vue3';
-import { useTemplateRef } from 'vue';
+import { Form, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -16,9 +15,11 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-const passwordInput = useTemplateRef('passwordInput');
+const page = usePage();
+const email = computed(() => page.props.auth.user.email);
 </script>
 
 <template>
@@ -47,7 +48,6 @@ const passwordInput = useTemplateRef('passwordInput');
                     <Form
                         v-bind="ProfileController.destroy.form()"
                         reset-on-success
-                        @error="() => passwordInput?.focus()"
                         :options="{
                             preserveScroll: true,
                         }"
@@ -62,23 +62,26 @@ const passwordInput = useTemplateRef('passwordInput');
                             <DialogDescription>
                                 Once your account is deleted, all of its
                                 resources and data will also be permanently
-                                deleted. Please enter your password to confirm
-                                you would like to permanently delete your
-                                account.
+                                deleted. Enter
+                                <span class="font-medium text-foreground">
+                                    {{ email }}
+                                </span>
+                                to confirm you would like to permanently delete
+                                your account.
                             </DialogDescription>
                         </DialogHeader>
 
                         <div class="grid gap-2">
-                            <Label for="password" class="sr-only"
-                                >Password</Label
+                            <Label for="email" class="sr-only"
+                                >Email address</Label
                             >
-                            <PasswordInput
-                                id="password"
-                                name="password"
-                                ref="passwordInput"
-                                placeholder="Password"
+                            <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                :placeholder="email"
                             />
-                            <InputError :message="errors.password" />
+                            <InputError :message="errors.email" />
                         </div>
 
                         <DialogFooter class="gap-2">

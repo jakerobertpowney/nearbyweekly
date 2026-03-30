@@ -69,6 +69,7 @@ const code = ref<string>('');
                                 :maxlength="6"
                                 :disabled="processing"
                                 autofocus
+                                class="[&_[data-active]]:ring-[#C4623A]"
                             >
                                 <InputOTPGroup>
                                     <InputOTPSlot
@@ -81,14 +82,16 @@ const code = ref<string>('');
                         </div>
                         <InputError :message="errors.code" />
                     </div>
-                    <Button type="submit" class="w-full" :disabled="processing"
-                        >Continue</Button
-                    >
-                    <div class="text-center text-sm text-muted-foreground">
+                    <Button
+                        type="submit"
+                        class="h-14 w-full rounded-2xl bg-[#FDF7F4]0 text-base font-semibold text-white hover:bg-[#A84E2C]"
+                        :disabled="processing"
+                    >Continue</Button>
+                    <div class="text-center text-sm text-slate-500">
                         <span>or you can </span>
                         <button
                             type="button"
-                            class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                            class="text-sm text-[#C4623A] underline-offset-4 hover:underline hover:text-[#A84E2C]"
                             @click="() => toggleRecoveryMode(clearErrors)"
                         >
                             {{ authConfigContent.buttonText }}
@@ -112,15 +115,17 @@ const code = ref<string>('');
                         required
                     />
                     <InputError :message="errors.recovery_code" />
-                    <Button type="submit" class="w-full" :disabled="processing"
-                        >Continue</Button
-                    >
+                    <Button
+                        type="submit"
+                        class="h-14 w-full rounded-2xl bg-[#FDF7F4]0 text-base font-semibold text-white hover:bg-[#A84E2C]"
+                        :disabled="processing"
+                    >Continue</Button>
 
-                    <div class="text-center text-sm text-muted-foreground">
+                    <div class="text-center text-sm text-slate-500">
                         <span>or you can </span>
                         <button
                             type="button"
-                            class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                            class="text-sm text-[#C4623A] underline-offset-4 hover:underline hover:text-[#A84E2C]"
                             @click="() => toggleRecoveryMode(clearErrors)"
                         >
                             {{ authConfigContent.buttonText }}

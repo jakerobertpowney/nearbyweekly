@@ -27,6 +27,11 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'postcode' => fake()->randomElement(['SW1A 1AA', 'M1 1AE', 'EH1 1YZ', 'BS1 4DJ', 'L1 8JQ']),
+            'latitude' => 51.507351,
+            'longitude' => -0.127758,
+            'radius_miles' => 25,
+            'newsletter_enabled' => true,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
@@ -43,6 +48,19 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user prefers events around Manchester.
+     */
+    public function manchester(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'postcode' => 'M1 1AE',
+            'latitude' => 53.479251,
+            'longitude' => -2.247926,
+            'radius_miles' => 10,
         ]);
     }
 

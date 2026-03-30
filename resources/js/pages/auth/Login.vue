@@ -1,21 +1,17 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
+import { Mail } from 'lucide-vue-next';
+import LoginLinkController from '@/actions/App/Http/Controllers/Auth/LoginLinkController';
 import InputError from '@/components/InputError.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { register } from '@/routes';
-import { store } from '@/routes/login';
-import { request } from '@/routes/password';
 
 defineProps<{
     status?: string;
-    canResetPassword: boolean;
     canRegister: boolean;
 }>();
 </script>
@@ -23,87 +19,59 @@ defineProps<{
 <template>
     <AuthBase
         title="Log in to your account"
-        description="Enter your email and password below to log in"
+        description="Enter your email and we'll send you a secure sign-in link"
     >
         <Head title="Log in" />
 
         <div
             v-if="status"
-            class="mb-4 text-center text-sm font-medium text-green-600"
+            class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-medium text-emerald-700"
         >
             {{ status }}
         </div>
 
         <Form
-            v-bind="store.form()"
-            :reset-on-success="['password']"
+            v-bind="LoginLinkController.store.form()"
             v-slot="{ errors, processing }"
-            class="flex flex-col gap-6"
+            class="flex flex-col gap-3"
         >
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
-                    <Input
-                        id="email"
-                        type="email"
-                        name="email"
-                        required
-                        autofocus
-                        :tabindex="1"
-                        autocomplete="email"
-                        placeholder="email@example.com"
-                    />
-                    <InputError :message="errors.email" />
-                </div>
-
-                <div class="grid gap-2">
-                    <div class="flex items-center justify-between">
-                        <Label for="password">Password</Label>
-                        <TextLink
-                            v-if="canResetPassword"
-                            :href="request()"
-                            class="text-sm"
-                            :tabindex="5"
-                        >
-                            Forgot password?
-                        </TextLink>
+                    <div class="relative">
+                        <Mail class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                        <Input
+                            id="email"
+                            type="email"
+                            name="email"
+                            required
+                            autofocus
+                            :tabindex="1"
+                            autocomplete="email"
+                            placeholder="you@example.com"
+                            class="h-14 rounded-2xl border-slate-300 pl-12 text-lg focus-visible:ring-[#E8956D]"
+                        />
                     </div>
-                    <PasswordInput
-                        id="password"
-                        name="password"
-                        required
-                        :tabindex="2"
-                        autocomplete="current-password"
-                        placeholder="Password"
-                    />
-                    <InputError :message="errors.password" />
-                </div>
-
-                <div class="flex items-center justify-between">
-                    <Label for="remember" class="flex items-center space-x-3">
-                        <Checkbox id="remember" name="remember" :tabindex="3" />
-                        <span>Remember me</span>
-                    </Label>
+                    <InputError :message="errors.email" />
                 </div>
 
                 <Button
                     type="submit"
-                    class="mt-4 w-full"
-                    :tabindex="4"
+                    class="h-14 w-full rounded-2xl bg-[#C4623A] text-base font-semibold text-white hover:bg-[#A84E2C]"
+                    :tabindex="2"
                     :disabled="processing"
                     data-test="login-button"
                 >
                     <Spinner v-if="processing" />
-                    Log in
+                    Email me a sign-in link
                 </Button>
             </div>
 
             <div
-                class="text-center text-sm text-muted-foreground"
+                class="text-center text-sm text-slate-500"
                 v-if="canRegister"
             >
-                Don't have an account?
-                <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
+                New to NearbyWeekly?
+                <TextLink :href="register()" :tabindex="3" class="text-[#C4623A] hover:text-[#A84E2C]">Get started</TextLink>
             </div>
         </Form>
     </AuthBase>

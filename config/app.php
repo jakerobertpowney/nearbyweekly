@@ -41,6 +41,8 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
+    'classification_enabled' => env('CLASSIFICATION_ENABLED', true),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL
