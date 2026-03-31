@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\FetchAllEventsJob;
 use App\Jobs\FetchEventsJob;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
@@ -16,17 +17,6 @@ class EventsFetchCommand extends Command
      */
     public function handle(): int
     {
-        $provider = $this->option('provider') ?: null;
-        $limit = (int) $this->option('limit');
-
-        FetchEventsJob::dispatch($provider, $limit);
-
-        $message = $provider
-            ? "Event fetch job dispatched for provider: {$provider}"
-            : 'Event fetch job dispatched for all providers';
-
-        $this->info($message);
-
-        return self::SUCCESS;
+        FetchAllEventsJob::dispatch();
     }
 }
