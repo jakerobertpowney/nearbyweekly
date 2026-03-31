@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import AppLogo from '@/components/AppLogo.vue';
 import { home } from '@/routes';
 
 const page = usePage();
@@ -20,14 +20,8 @@ defineProps<{
             class="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r"
         >
             <div class="absolute inset-0 bg-zinc-900" />
-            <Link
-                :href="home()"
-                class="relative z-20 flex items-center text-lg font-medium"
-            >
-                <AppLogoIcon class="mr-2" />
-                <span class="font-heading font-bold">
-                    <span class="text-white">Nearby</span><span class="text-brand-soft ml-1">Weekly</span>
-                </span>
+            <Link :href="home()" class="relative z-20 flex items-center">
+                <AppLogo />
             </Link>
         </div>
         <div class="lg:p-8">

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
 import { ChevronDown, Database, MapPin, Sparkles } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import HeroCards from '@/components/HeroCards.vue';
 import type { HeroCard, CardPlacement } from '@/components/HeroCards.vue';
-import { normalizePostcode, validatePostcode } from '@/composables/usePostcodeValidation';
+import {
+    normalizePostcode,
+    validatePostcode,
+} from '@/composables/usePostcodeValidation';
 import { dashboard } from '@/routes';
 import { login } from '@/routes';
 
@@ -58,26 +61,12 @@ async function goWithPostcode(
         }
 
         errorRef.value = '';
-
-        const existing = JSON.parse(
-            localStorage.getItem('nearbyweekly-onboarding') ?? '{}',
-        );
-        localStorage.setItem(
-            'nearbyweekly-onboarding',
-            JSON.stringify({
-                ...existing,
-                postcode: result.postcode,
-                postcode_verified: true,
-            }),
-        );
+        router.visit(`/start?postcode=${encodeURIComponent(result.postcode)}`);
     } catch {
         errorRef.value = 'We could not save your postcode. Please try again.';
-        return;
     } finally {
         loadingRef.value = false;
     }
-
-    router.visit('/start');
 }
 
 // --- Preview tab ---
@@ -358,28 +347,59 @@ const previewSections = [
         ],
     },
 ];
+
+// --- Sticky logo behaviour ---
+// heroLogoRef is the logo sitting above the hero h1.
+// Once it scrolls out of view (upward), navLogoVisible becomes true and the
+// sticky nav logo fades in, so there's always a logo anchored to the top.
+const heroLogoRef = ref<HTMLElement | null>(null);
+const navLogoVisible = ref(false);
+let heroLogoObserver: IntersectionObserver | null = null;
+
+onMounted(() => {
+    if (heroLogoRef.value) {
+        heroLogoObserver = new IntersectionObserver(
+            ([entry]) => {
+                navLogoVisible.value = !entry.isIntersecting;
+            },
+            // Fire when the logo clears the very top of the viewport
+            { threshold: 0, rootMargin: '0px 0px 0px 0px' },
+        );
+        heroLogoObserver.observe(heroLogoRef.value);
+    }
+});
+
+onUnmounted(() => {
+    heroLogoObserver?.disconnect();
+});
 </script>
 
 <template>
     <div class="min-h-screen bg-white text-slate-900">
         <!-- ───── NAV ───── -->
-        <nav
-            class="sticky top-0 z-50 bg-white/90 backdrop-blur"
-        >
+        <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur">
             <div
-                class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4"
+                class="relative mx-auto flex max-w-6xl items-center justify-end px-6 py-4"
             >
-                <a href="/" class="flex items-center gap-2.5">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-xl border" style="background:#F5EAE3; border-color:#E8D5C8;">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
-                            <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
-                        </svg>
-                    </span>
-                    <span class="font-heading text-lg font-bold">
-                        <span style="color:#1C1109">Nearby</span><span style="color:#C4623A" class="ml-1">Weekly</span>
-                    </span>
-                </a>
+                <!-- Logo fades in centred once the hero logo has scrolled out of view -->
+                <Transition
+                    enter-active-class="transition-opacity duration-200"
+                    leave-active-class="transition-opacity duration-200"
+                    enter-from-class="opacity-0"
+                    leave-to-class="opacity-0"
+                >
+                    <a
+                        v-if="navLogoVisible"
+                        href="/"
+                        class="absolute left-1/2 -translate-x-1/2"
+                    >
+                        <img
+                            src="/images/logo.svg"
+                            alt="Nearby Weekly"
+                            class="h-8 w-auto"
+                        />
+                    </a>
+                </Transition>
                 <div class="flex items-center gap-3">
                     <template v-if="$page.props.auth?.user">
                         <a
@@ -425,7 +445,16 @@ const previewSections = [
                 />
 
                 <!-- Centre: headline + CTA -->
-                <div class="hero-center max-w-2xl mx-auto">
+                <div class="hero-center mx-auto max-w-2xl">
+                    <!-- Logo sits above the headline; once it scrolls out of view the nav logo appears -->
+                    <div class="mb-6 flex justify-center">
+                        <img
+                            ref="heroLogoRef"
+                            src="/images/logo.svg"
+                            alt="Nearby Weekly"
+                            class="h-10 w-auto"
+                        />
+                    </div>
                     <span class="hero-pill">Weekly UK events newsletter</span>
                     <h1 class="hero-heading font-heading">
                         Events you'd actually go to
@@ -447,22 +476,14 @@ const previewSections = [
                                     class="hero-input"
                                     :disabled="heroPostcodeChecking"
                                     @keyup.enter="
-                                        goWithPostcode(
-                                            heroPostcode,
-                                            'hero',
-                                        )
+                                        goWithPostcode(heroPostcode, 'hero')
                                     "
                                 />
                             </div>
                             <button
                                 class="hero-btn"
                                 :disabled="heroPostcodeChecking"
-                                @click="
-                                    goWithPostcode(
-                                        heroPostcode,
-                                        'hero',
-                                    )
-                                "
+                                @click="goWithPostcode(heroPostcode, 'hero')"
                             >
                                 {{
                                     heroPostcodeChecking
@@ -543,47 +564,47 @@ const previewSections = [
                 </div>
 
                 <!-- Tab bar -->
-<!--                <div class="mb-6 flex justify-center">-->
-<!--                    <div-->
-<!--                        class="inline-flex rounded-full border p-1 shadow-sm"-->
-<!--                        style="border-color: #e8d5c8; background: white"-->
-<!--                    >-->
-<!--                        <button-->
-<!--                            type="button"-->
-<!--                            class="rounded-full px-5 py-2 text-sm font-medium transition-all"-->
-<!--                            :class="-->
-<!--                                activeTab === 'email'-->
-<!--                                    ? 'text-white shadow-sm'-->
-<!--                                    : 'hover:opacity-70'-->
-<!--                            "-->
-<!--                            :style="-->
-<!--                                activeTab === 'email'-->
-<!--                                    ? 'background: #C4623A; color: white;'-->
-<!--                                    : 'color: #6B4535;'-->
-<!--                            "-->
-<!--                            @click="activeTab = 'email'"-->
-<!--                        >-->
-<!--                            Via email-->
-<!--                        </button>-->
-<!--                        <button-->
-<!--                            type="button"-->
-<!--                            class="rounded-full px-5 py-2 text-sm font-medium transition-all"-->
-<!--                            :class="-->
-<!--                                activeTab === 'browser'-->
-<!--                                    ? 'text-white shadow-sm'-->
-<!--                                    : 'hover:opacity-70'-->
-<!--                            "-->
-<!--                            :style="-->
-<!--                                activeTab === 'browser'-->
-<!--                                    ? 'background: #C4623A; color: white;'-->
-<!--                                    : 'color: #6B4535;'-->
-<!--                            "-->
-<!--                            @click="activeTab = 'browser'"-->
-<!--                        >-->
-<!--                            In the browser-->
-<!--                        </button>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="mb-6 flex justify-center">-->
+                <!--                    <div-->
+                <!--                        class="inline-flex rounded-full border p-1 shadow-sm"-->
+                <!--                        style="border-color: #e8d5c8; background: white"-->
+                <!--                    >-->
+                <!--                        <button-->
+                <!--                            type="button"-->
+                <!--                            class="rounded-full px-5 py-2 text-sm font-medium transition-all"-->
+                <!--                            :class="-->
+                <!--                                activeTab === 'email'-->
+                <!--                                    ? 'text-white shadow-sm'-->
+                <!--                                    : 'hover:opacity-70'-->
+                <!--                            "-->
+                <!--                            :style="-->
+                <!--                                activeTab === 'email'-->
+                <!--                                    ? 'background: #C4623A; color: white;'-->
+                <!--                                    : 'color: #6B4535;'-->
+                <!--                            "-->
+                <!--                            @click="activeTab = 'email'"-->
+                <!--                        >-->
+                <!--                            Via email-->
+                <!--                        </button>-->
+                <!--                        <button-->
+                <!--                            type="button"-->
+                <!--                            class="rounded-full px-5 py-2 text-sm font-medium transition-all"-->
+                <!--                            :class="-->
+                <!--                                activeTab === 'browser'-->
+                <!--                                    ? 'text-white shadow-sm'-->
+                <!--                                    : 'hover:opacity-70'-->
+                <!--                            "-->
+                <!--                            :style="-->
+                <!--                                activeTab === 'browser'-->
+                <!--                                    ? 'background: #C4623A; color: white;'-->
+                <!--                                    : 'color: #6B4535;'-->
+                <!--                            "-->
+                <!--                            @click="activeTab = 'browser'"-->
+                <!--                        >-->
+                <!--                            In the browser-->
+                <!--                        </button>-->
+                <!--                    </div>-->
+                <!--                </div>-->
 
                 <!-- Email frame -->
                 <div
@@ -607,11 +628,26 @@ const previewSections = [
                         <div class="flex flex-1 items-center gap-2 truncate">
                             <div
                                 class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border"
-                                style="background:#F5EAE3; border-color:#E8D5C8;"
+                                style="
+                                    background: #f5eae3;
+                                    border-color: #e8d5c8;
+                                "
                             >
-                                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
-                                    <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+                                <svg
+                                    class="h-3 w-3"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#C4623A"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path
+                                        d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"
+                                    />
+                                    <path d="M13 5v2" />
+                                    <path d="M13 17v2" />
+                                    <path d="M13 11v2" />
                                 </svg>
                             </div>
                             <span
@@ -641,16 +677,34 @@ const previewSections = [
                                 <div class="mb-6 flex items-center gap-3">
                                     <div
                                         class="flex h-10 w-10 items-center justify-center rounded-xl border"
-                                        style="background:#F5EAE3; border-color:#E8D5C8;"
+                                        style="
+                                            background: #f5eae3;
+                                            border-color: #e8d5c8;
+                                        "
                                     >
-                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
-                                            <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+                                        <svg
+                                            class="h-5 w-5"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="#C4623A"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <path
+                                                d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"
+                                            />
+                                            <path d="M13 5v2" />
+                                            <path d="M13 17v2" />
+                                            <path d="M13 11v2" />
                                         </svg>
                                     </div>
                                     <div>
                                         <p class="font-bold text-slate-900">
-                                            <span>Nearby</span> <span style="color:#C4623A">Weekly</span>
+                                            <span>Nearby</span>
+                                            <span style="color: #c4623a"
+                                                >Weekly</span
+                                            >
                                         </p>
                                         <p class="text-xs text-slate-500">
                                             hello@nearbyweekly.co.uk · Thursday
@@ -867,18 +921,42 @@ const previewSections = [
                                     <div class="mb-6 flex items-center gap-3">
                                         <div
                                             class="flex h-10 w-10 items-center justify-center rounded-xl border"
-                                            style="background:#F5EAE3; border-color:#E8D5C8;"
+                                            style="
+                                                background: #f5eae3;
+                                                border-color: #e8d5c8;
+                                            "
                                         >
-                                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
-                                                <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+                                            <svg
+                                                class="h-5 w-5"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="#C4623A"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            >
+                                                <path
+                                                    d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"
+                                                />
+                                                <path d="M13 5v2" />
+                                                <path d="M13 17v2" />
+                                                <path d="M13 11v2" />
                                             </svg>
                                         </div>
                                         <div>
-                                            <p class="font-bold" style="color: #1c1109">
-                                                <span>Nearby</span> <span style="color:#C4623A">Weekly</span>
+                                            <p
+                                                class="font-bold"
+                                                style="color: #1c1109"
+                                            >
+                                                <span>Nearby</span>
+                                                <span style="color: #c4623a"
+                                                    >Weekly</span
+                                                >
                                             </p>
-                                            <p class="text-xs" style="color: #9c6b54">
+                                            <p
+                                                class="text-xs"
+                                                style="color: #9c6b54"
+                                            >
                                                 Weekly picks · SE1
                                             </p>
                                         </div>
@@ -1475,10 +1553,7 @@ const previewSections = [
                                         color: #1c1109;
                                     "
                                     @keyup.enter="
-                                        goWithPostcode(
-                                            footerPostcode,
-                                            'footer',
-                                        )
+                                        goWithPostcode(footerPostcode, 'footer')
                                     "
                                 />
                             </div>
@@ -1487,10 +1562,7 @@ const previewSections = [
                                 :disabled="footerPostcodeChecking"
                                 style="background: #c4623a"
                                 @click="
-                                    goWithPostcode(
-                                        footerPostcode,
-                                        'footer',
-                                    )
+                                    goWithPostcode(footerPostcode, 'footer')
                                 "
                             >
                                 {{
@@ -1521,14 +1593,30 @@ const previewSections = [
         <footer class="bg-white px-6 py-12 text-slate-600">
             <div class="mx-auto max-w-6xl space-y-6">
                 <div class="flex items-center gap-2.5">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-xl" style="background:#F5EAE3; border:1px solid #E8D5C8;">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="#E8956D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
-                            <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+                    <span
+                        class="flex h-8 w-8 items-center justify-center rounded-xl"
+                        style="background: #f5eae3; border: 1px solid #e8d5c8"
+                    >
+                        <svg
+                            class="h-4 w-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#E8956D"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"
+                            />
+                            <path d="M13 5v2" />
+                            <path d="M13 17v2" />
+                            <path d="M13 11v2" />
                         </svg>
                     </span>
                     <span class="font-heading text-lg font-bold">
-                        <span class="text-slate-900">Nearby</span><span class="ml-1" style="color:#E8956D">Weekly</span>
+                        <span class="text-slate-900">Nearby</span
+                        ><span class="ml-1" style="color: #e8956d">Weekly</span>
                     </span>
                 </div>
                 <p class="max-w-xs text-sm leading-relaxed">
@@ -1545,7 +1633,9 @@ const previewSections = [
                         class="transition-colors hover:text-slate-900"
                         >Sign in</a
                     >
-                    <a href="/start" class="transition-colors hover:text-slate-900"
+                    <a
+                        href="/start"
+                        class="transition-colors hover:text-slate-900"
                         >Get started</a
                     >
                 </nav>
@@ -1565,6 +1655,8 @@ const previewSections = [
     align-items: center;
     padding: 48px 24px 32px;
     gap: 32px;
+    max-width: 1600px;
+    margin: 0px auto;
 }
 
 @media (min-width: 1024px) {

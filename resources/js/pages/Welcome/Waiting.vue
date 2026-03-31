@@ -103,17 +103,7 @@ onUnmounted(() => {
 
             <!-- Logo -->
             <div class="flex justify-center">
-                <div class="flex items-center gap-2.5">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-surface border border-brand-border">
-                        <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
-                            <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
-                        </svg>
-                    </div>
-                    <span class="font-heading text-xl font-bold">
-                        <span class="text-brand-text">Nearby</span><span class="text-brand-primary ml-1">Weekly</span>
-                    </span>
-                </div>
+                <img src="/images/logo.svg" alt="Nearby Weekly" class="h-9 w-auto" />
             </div>
 
             <!-- Loading state -->

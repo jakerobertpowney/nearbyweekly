@@ -93,6 +93,19 @@ const persistedState = useStorage<PersistedOnboardingState>(
     'nearbyweekly-onboarding',
     defaultState,
 );
+
+// Always start fresh — clear any previously saved onboarding state so
+// returning to /start never pre-fills fields from a prior session.
+persistedState.value = { ...defaultState };
+
+// If the user came from the marketing page with a verified postcode in the
+// URL (e.g. /start?postcode=SW1A+1AA), carry it through so they don't have
+// to re-enter it and the postcode step is skipped automatically.
+const _urlPostcode = new URLSearchParams(window.location.search).get('postcode');
+if (_urlPostcode) {
+    persistedState.value = { ...defaultState, postcode: _urlPostcode, postcode_verified: true };
+}
+
 const form = useForm<FormState>({
     postcode: persistedState.value.postcode,
     radius_miles: persistedState.value.radius_miles,
@@ -460,17 +473,7 @@ onUnmounted(() => {
         <!-- Top bar -->
         <header class="border-b border-slate-100 bg-white px-6 py-4">
             <div class="mx-auto flex max-w-3xl items-center justify-between">
-                <div class="flex items-center gap-2.5">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-surface border border-brand-border">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="#C4623A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
-                            <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
-                        </svg>
-                    </div>
-                    <span class="font-heading text-lg font-bold">
-                        <span class="text-brand-text">Nearby</span><span class="text-brand-primary ml-1">Weekly</span>
-                    </span>
-                </div>
+                <img src="/images/logo.svg" alt="Nearby Weekly" class="h-8 w-auto" />
 <!--                <span v-if="currentStep < 5" class="text-sm text-slate-400">-->
 <!--                    Step {{ visibleStep }} of 4-->
 <!--                </span>-->
