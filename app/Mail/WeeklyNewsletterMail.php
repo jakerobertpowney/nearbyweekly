@@ -18,7 +18,7 @@ class WeeklyNewsletterMail extends Mailable implements ShouldQueue
     /**
      * Create a new message instance.
      *
-     * @param  array<string, list<array>>  $matches          Bucketed candidates keyed by bucket name.
+     * @param  array<string, list<array>>  $matches  Bucketed candidates keyed by bucket name.
      * @param  array{
      *     day_type: string,
      *     intro_line: string,
@@ -34,6 +34,15 @@ class WeeklyNewsletterMail extends Mailable implements ShouldQueue
         public array $seasonalPicks = [],
     ) {}
 
+    public function headers(): Headers
+    {
+        return new Headers(
+            text: [
+                'X-PM-Message-Stream' => 'broadcast',
+            ],
+        );
+    }
+
     /**
      * Get the message envelope.
      *
@@ -45,16 +54,13 @@ class WeeklyNewsletterMail extends Mailable implements ShouldQueue
 
         $subject = match ($dayType) {
             'saturday' => "Still happening near {$this->user->postcode} this weekend",
-            'sunday'   => "Plan your week — events near {$this->user->postcode}",
-            'friday'   => "This weekend near {$this->user->postcode} — what's on",
-            default    => "Your weekly events near {$this->user->postcode}",
+            'sunday' => "Plan your week — events near {$this->user->postcode}",
+            'friday' => "This weekend near {$this->user->postcode} — what's on",
+            default => "Your weekly events near {$this->user->postcode}",
         };
 
         return new Envelope(
-            subject: $subject,
-            headers: new Headers(
-                headers: ['X-PM-Message-Stream' => 'broadcast'],
-            ),
+            subject: $subject
         );
     }
 
