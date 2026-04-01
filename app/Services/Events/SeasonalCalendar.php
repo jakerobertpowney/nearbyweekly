@@ -17,7 +17,7 @@ class SeasonalCalendar
      *
      * @return list<array{slug: string, label: string, emoji: string, tags: list<string>}>
      */
-    public function activeSeasons(Carbon $date): array
+    public function activeSeasons(CarbonInterface $date): array
     {
         $active = [];
 
