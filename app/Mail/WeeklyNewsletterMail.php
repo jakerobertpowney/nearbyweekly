@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Headers;
 use Illuminate\Queue\SerializesModels;
 
 class WeeklyNewsletterMail extends Mailable implements ShouldQueue
@@ -49,7 +50,12 @@ class WeeklyNewsletterMail extends Mailable implements ShouldQueue
             default    => "Your weekly events near {$this->user->postcode}",
         };
 
-        return new Envelope(subject: $subject);
+        return new Envelope(
+            subject: $subject,
+            headers: new Headers(
+                headers: ['X-PM-Message-Stream' => 'broadcast'],
+            ),
+        );
     }
 
     /**

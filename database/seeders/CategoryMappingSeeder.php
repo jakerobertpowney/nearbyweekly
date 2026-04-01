@@ -55,6 +55,69 @@ class CategoryMappingSeeder extends Seeder
             ['interest' => 'farming-and-rural', 'source' => 'datathistle', 'external_category' => 'farming'],
             ['interest' => 'farming-and-rural', 'source' => 'datathistle', 'external_category' => 'rural'],
 
+            // Shows & Attractions — Motor Shows & Cars
+            ['interest' => 'motor-shows', 'source' => 'datathistle', 'external_category' => 'motor-show'],
+            ['interest' => 'motor-shows', 'source' => 'datathistle', 'external_category' => 'motor-shows'],
+            ['interest' => 'motor-shows', 'source' => 'datathistle', 'external_category' => 'motorshow'],
+            ['interest' => 'motor-shows', 'source' => 'datathistle', 'external_category' => 'car-show'],
+            ['interest' => 'motor-shows', 'source' => 'datathistle', 'external_category' => 'classic-cars'],
+            ['interest' => 'motor-shows', 'source' => 'datathistle', 'external_category' => 'classic-car-show'],
+            ['interest' => 'motor-shows', 'source' => 'datathistle', 'external_category' => 'cars'],
+            ['interest' => 'motor-shows', 'source' => 'datathistle', 'external_category' => 'automotive'],
+            ['interest' => 'motor-shows', 'source' => 'ticketmaster', 'external_category' => 'motor sports'],
+            ['interest' => 'motor-shows', 'source' => 'ticketmaster-feed', 'external_category' => 'motor sports'],
+            ['interest' => 'motor-shows', 'source' => 'billetto', 'external_category' => 'motor_show'],
+            ['interest' => 'motor-shows', 'source' => 'billetto', 'external_category' => 'automotive'],
+
+            // Shows & Attractions — Air Shows
+            ['interest' => 'air-shows', 'source' => 'datathistle', 'external_category' => 'air-show'],
+            ['interest' => 'air-shows', 'source' => 'datathistle', 'external_category' => 'air-shows'],
+            ['interest' => 'air-shows', 'source' => 'datathistle', 'external_category' => 'airshow'],
+            ['interest' => 'air-shows', 'source' => 'datathistle', 'external_category' => 'air-display'],
+            ['interest' => 'air-shows', 'source' => 'datathistle', 'external_category' => 'aviation'],
+            ['interest' => 'air-shows', 'source' => 'billetto',    'external_category' => 'air_show'],
+            ['interest' => 'air-shows', 'source' => 'billetto',    'external_category' => 'aviation'],
+
+            // Shows & Attractions — Agricultural & County Shows
+            ['interest' => 'agricultural-shows', 'source' => 'datathistle', 'external_category' => 'agricultural-show'],
+            ['interest' => 'agricultural-shows', 'source' => 'datathistle', 'external_category' => 'county-show'],
+            ['interest' => 'agricultural-shows', 'source' => 'datathistle', 'external_category' => 'country-show'],
+            ['interest' => 'agricultural-shows', 'source' => 'datathistle', 'external_category' => 'country-fair'],
+            ['interest' => 'agricultural-shows', 'source' => 'datathistle', 'external_category' => 'agricultural'],
+            ['interest' => 'agricultural-shows', 'source' => 'datathistle', 'external_category' => 'country-sports'],
+            ['interest' => 'agricultural-shows', 'source' => 'billetto',    'external_category' => 'agricultural_show'],
+            ['interest' => 'agricultural-shows', 'source' => 'billetto',    'external_category' => 'country_show'],
+
+            // Shows & Attractions — Flower & Garden Shows
+            ['interest' => 'flower-garden-shows', 'source' => 'datathistle', 'external_category' => 'flower-show'],
+            ['interest' => 'flower-garden-shows', 'source' => 'datathistle', 'external_category' => 'garden-show'],
+            ['interest' => 'flower-garden-shows', 'source' => 'datathistle', 'external_category' => 'gardening'],
+            ['interest' => 'flower-garden-shows', 'source' => 'datathistle', 'external_category' => 'horticulture'],
+            ['interest' => 'flower-garden-shows', 'source' => 'datathistle', 'external_category' => 'garden'],
+            ['interest' => 'flower-garden-shows', 'source' => 'datathistle', 'external_category' => 'flowers'],
+            ['interest' => 'flower-garden-shows', 'source' => 'billetto',    'external_category' => 'garden_show'],
+            ['interest' => 'flower-garden-shows', 'source' => 'billetto',    'external_category' => 'gardening'],
+
+            // Shows & Attractions — Boat Shows
+            ['interest' => 'boat-shows', 'source' => 'datathistle', 'external_category' => 'boat-show'],
+            ['interest' => 'boat-shows', 'source' => 'datathistle', 'external_category' => 'boat-shows'],
+            ['interest' => 'boat-shows', 'source' => 'datathistle', 'external_category' => 'marine'],
+            ['interest' => 'boat-shows', 'source' => 'datathistle', 'external_category' => 'nautical'],
+            ['interest' => 'boat-shows', 'source' => 'billetto',    'external_category' => 'boat_show'],
+            ['interest' => 'boat-shows', 'source' => 'billetto',    'external_category' => 'marine'],
+
+            // Outdoors & Nature — Sailing & Water Sports
+            ['interest' => 'sailing-watersports', 'source' => 'datathistle', 'external_category' => 'sailing'],
+            ['interest' => 'sailing-watersports', 'source' => 'datathistle', 'external_category' => 'watersports'],
+            ['interest' => 'sailing-watersports', 'source' => 'datathistle', 'external_category' => 'water-sports'],
+            ['interest' => 'sailing-watersports', 'source' => 'datathistle', 'external_category' => 'kayaking'],
+            ['interest' => 'sailing-watersports', 'source' => 'datathistle', 'external_category' => 'paddleboarding'],
+            ['interest' => 'sailing-watersports', 'source' => 'datathistle', 'external_category' => 'surfing'],
+            ['interest' => 'sailing-watersports', 'source' => 'datathistle', 'external_category' => 'windsurfing'],
+            ['interest' => 'sailing-watersports', 'source' => 'datathistle', 'external_category' => 'rowing'],
+            ['interest' => 'sailing-watersports', 'source' => 'billetto',    'external_category' => 'sailing'],
+            ['interest' => 'sailing-watersports', 'source' => 'billetto',    'external_category' => 'water_sports'],
+
             // Arts & Culture — Ticketmaster (arts & theatre maps to BOTH theatre and arts-and-culture)
             ['interest' => 'arts-and-culture', 'source' => 'ticketmaster', 'external_category' => 'arts & theatre'],
             ['interest' => 'arts-and-culture', 'source' => 'ticketmaster-feed', 'external_category' => 'arts & theatre'],

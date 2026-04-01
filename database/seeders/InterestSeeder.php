@@ -20,6 +20,7 @@ class InterestSeeder extends Seeder
             ['name' => 'Family',               'slug' => 'family',                 'sort_order' => 5],
             ['name' => 'Outdoors & Nature',    'slug' => 'outdoors-and-nature',    'sort_order' => 6],
             ['name' => 'Tech & Professional',  'slug' => 'tech-and-professional',  'sort_order' => 7],
+            ['name' => 'Shows & Attractions',  'slug' => 'shows-and-attractions',  'sort_order' => 8],
         ];
 
         $children = [
@@ -57,10 +58,18 @@ class InterestSeeder extends Seeder
                 ['name' => 'Martial Arts',    'slug' => 'martial-arts'],
             ],
             'outdoors-and-nature' => [
-                ['name' => 'Hiking',              'slug' => 'hiking'],
-                ['name' => 'Farming & Rural',     'slug' => 'farming-and-rural'],
-                ['name' => 'Outdoor Adventures',  'slug' => 'outdoor-adventures'],
-                ['name' => 'Wildlife & Nature',   'slug' => 'wildlife-nature'],
+                ['name' => 'Hiking',                  'slug' => 'hiking'],
+                ['name' => 'Farming & Rural',         'slug' => 'farming-and-rural'],
+                ['name' => 'Outdoor Adventures',      'slug' => 'outdoor-adventures'],
+                ['name' => 'Wildlife & Nature',       'slug' => 'wildlife-nature'],
+                ['name' => 'Sailing & Water Sports',  'slug' => 'sailing-watersports'],
+            ],
+            'shows-and-attractions' => [
+                ['name' => 'Motor Shows & Cars',          'slug' => 'motor-shows'],
+                ['name' => 'Air Shows',                   'slug' => 'air-shows'],
+                ['name' => 'Agricultural & County Shows', 'slug' => 'agricultural-shows'],
+                ['name' => 'Flower & Garden Shows',       'slug' => 'flower-garden-shows'],
+                ['name' => 'Boat Shows',                  'slug' => 'boat-shows'],
             ],
             'family' => [
                 ['name' => 'Family Days Out',  'slug' => 'family-days-out'],
