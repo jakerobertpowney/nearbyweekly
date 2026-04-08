@@ -3,6 +3,7 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import { LogOut, Newspaper, Settings, SlidersHorizontal } from 'lucide-vue-next';
 import { ref } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
+import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { dashboard } from '@/routes';
 import { edit as editPreferences } from '@/routes/preferences';
 import { edit as editSettings } from '@/routes/profile';
@@ -32,7 +33,8 @@ const userInitial = (): string => {
     <header class="fixed inset-x-0 top-0 z-50 flex h-14 items-center border-b border-slate-100 bg-white px-4 md:px-6">
         <!-- Logo -->
         <Link :href="dashboard().url" class="flex-shrink-0">
-            <AppLogo />
+            <AppLogoIcon class="size-7 fill-current text-[#C4623A] sm:hidden" />
+            <span class="hidden sm:block"><AppLogo /></span>
         </Link>
 
         <!-- Centre nav tabs -->
@@ -45,7 +47,7 @@ const userInitial = (): string => {
                     : 'border-b-2 border-transparent text-slate-500 hover:text-slate-700'"
             >
                 <Newspaper class="h-4 w-4" />
-                My Picks
+                <span class="hidden sm:inline">My Picks</span>
             </Link>
             <Link
                 :href="editPreferences().url"
@@ -55,7 +57,7 @@ const userInitial = (): string => {
                     : 'border-b-2 border-transparent text-slate-500 hover:text-slate-700'"
             >
                 <SlidersHorizontal class="h-4 w-4" />
-                Preferences
+                <span class="hidden sm:inline">Preferences</span>
             </Link>
         </nav>
 
