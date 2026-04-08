@@ -6,7 +6,6 @@ use App\Contracts\PostcodeGeocoder;
 use App\Http\Requests\UpdatePreferenceRequest;
 use App\Jobs\GeocodeUserJob;
 use App\Models\Interest;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -57,15 +56,4 @@ class PreferenceController extends Controller
         return back()->with('status', 'Preferences updated.');
     }
 
-    /**
-     * Disable the newsletter for the user via a signed unsubscribe link.
-     */
-    public function unsubscribe(Request $request, User $user): RedirectResponse
-    {
-        $user->update([
-            'newsletter_enabled' => false,
-        ]);
-
-        return redirect('/')->with('status', 'You have been unsubscribed from the weekly newsletter.');
-    }
 }

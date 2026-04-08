@@ -9,6 +9,17 @@
         body { margin: 0; padding: 0; background-color: #f8f4f1; }
         img { border: 0; display: block; }
         a { color: #C4623A; text-decoration: none; }
+        @media only screen and (max-width: 480px) {
+            .card-col {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding-right: 0 !important;
+            }
+            .card-col-spacer {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body style="margin:0; padding:0; background-color:#f8f4f1; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
@@ -17,10 +28,6 @@
         $allMatches = collect($matches)->flatten(1);
         $totalCount = $allMatches->count();
         $bucketCount = collect($matches)->filter(fn($b) => count($b) > 0)->count();
-
-        // ── Timing-aware display values ─────────────────────────────────────
-        $dayType   = $newsletterContext['day_type'] ?? 'normal';
-        $introLine = $newsletterContext['intro_line'] ?? "Here's what's happening near you";
 
         $bucketLabels = $newsletterContext['bucket_labels'] ?? [
             'weekend'     => 'THIS WEEKEND',
@@ -59,6 +66,10 @@
         $interestNames = $allMatchedIds
             ? \App\Models\Interest::query()->whereIn('id', $allMatchedIds)->pluck('name', 'id')
             : collect();
+
+        $interestSlugs = $allMatchedIds
+            ? \App\Models\Interest::query()->whereIn('id', $allMatchedIds)->pluck('slug', 'id')
+            : collect();
     @endphp
 
     {{-- Preview text (inbox snippet before email is opened) --}}
@@ -80,19 +91,7 @@
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td style="vertical-align:middle;">
-                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                                            <tr>
-                                                <td style="vertical-align:middle;">
-                                                    <div style="width:32px; height:32px; background-color:#F5EAE3; border:1px solid #E8D5C8; border-radius:10px; text-align:center;">
-                                                        <img src="{{ url('/images/logo-icon-email.png') }}" alt="" width="18" height="18" style="display:inline-block; margin-top:7px; width:18px; height:18px;" onerror="this.style.display='none'">
-                                                    </div>
-                                                </td>
-                                                <td style="vertical-align:middle; padding-left:10px;">
-                                                    <span style="font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:18px; color:#1C1109; letter-spacing:-0.3px;">Nearby</span>
-                                                    <span style="font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:18px; color:#C4623A; letter-spacing:-0.3px;">Weekly</span>
-                                                </td>
-                                            </tr>
-                                        </table>
+                                        <img src="{{ url('/images/logo.svg') }}" alt="NearbyWeekly" width="140" height="32" style="display:block; width:140px; height:32px; border:0;">
                                     </td>
                                     <td align="right" style="vertical-align:middle;">
                                         <span style="font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#9C6B54;">Week of {{ now()->format('j F') }}</span>
@@ -105,25 +104,11 @@
                     {{-- ── HERO ── --}}
                     <tr>
                         <td style="background-color:#ffffff; padding:32px 24px 24px 24px;">
-                            <p style="margin:0 0 10px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:11px; color:#C4623A; letter-spacing:0.12em; text-transform:uppercase;">
-                                Your Weekly Picks
-                            </p>
-                            {{-- Context-aware intro line --}}
-                            <p style="margin:0 0 6px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#9C6B54; line-height:1.5;">
-                                {{ $introLine }}
-                            </p>
-                            <h1 style="margin:0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:26px; line-height:1.25; color:#1C1109;">
-                                @if ($dayType === 'saturday')
-                                    Here&rsquo;s what&rsquo;s still on near {{ $user->postcode }}
-                                @elseif ($dayType === 'sunday')
-                                    Plan your week near {{ $user->postcode }}
-                                @else
-                                    Here&rsquo;s what&rsquo;s on near {{ $user->postcode }} this week
-                                @endif
+                            <h1 style="margin:0 0 8px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:26px; line-height:1.25; color:#1C1109;">
+                                What&rsquo;s on near {{ $outwardCode }} this week
                             </h1>
-                            <div style="margin:14px 0 16px 0; width:40px; height:2px; background-color:#C4623A; font-size:0; line-height:0;">&nbsp;</div>
                             <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:1.6; color:#6B4535;">
-                                {{ $totalCount }} {{ Str::plural('event', $totalCount) }} across {{ $bucketCount }} time {{ Str::plural('window', $bucketCount) }}, curated just for you.
+                                {{ $totalEvents }} {{ Str::plural('pick', $totalEvents) }} across this weekend, next week, and beyond.
                             </p>
                         </td>
                     </tr>
@@ -169,16 +154,20 @@
                                             @php
                                                 $event    = $match['event'];
                                                 $category = $event->category ?? '';
-                                                $emoji    = $emojiMap[$category] ?? '&#128197;';
-                                                $label    = $category ? strtoupper(str_replace('-', ' ', $category)) : 'EVENT';
                                                 $isSuggestion = ($match['match_type'] ?? 'direct') === 'suggestion';
 
                                                 $matchedInterestName = ($match['display_interest_id'] ?? null) !== null
                                                     ? ($interestNames[$match['display_interest_id']] ?? null)
                                                     : null;
+
+                                                $interestSlug = ($match['display_interest_id'] ?? null) !== null
+                                                    ? ($interestSlugs[$match['display_interest_id']] ?? null)
+                                                    : null;
+                                                $emoji = $emojiMap[$interestSlug ?? $category] ?? '&#128197;';
+                                                $label = $matchedInterestName ? strtoupper($matchedInterestName) : ($category ? strtoupper(str_replace('-', ' ', $category)) : 'EVENT');
                                             @endphp
                                             {{-- Card cell (272px = (552 - 8px gap) / 2) --}}
-                                            <td width="272" valign="top" style="width:272px; padding-bottom:8px; padding-right:{{ $loop->first ? '8px' : '0' }};">
+                                            <td width="272" valign="top" class="card-col" style="width:272px; padding-bottom:8px; padding-right:{{ $loop->first ? '8px' : '0' }};">
                                                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background-color:#ffffff;">
                                                     <tr>
                                                         <td style="padding:0;">
@@ -202,7 +191,7 @@
 
                                                             {{-- Category badge --}}
                                                             <span style="display:inline-block; padding:3px 8px; background-color:#F5EAE3; color:#C4623A; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:10px; letter-spacing:0.08em; text-transform:uppercase;">
-                                                                {!! $emoji !!} {{ $label }}
+                                                                {!! $emoji !!} {{ $matchedInterestName ? strtoupper($matchedInterestName) : $label }}
                                                             </span>
 
                                                             {{-- Suggestion / match indicator --}}
@@ -214,10 +203,6 @@
                                                                         &middot; {{ $matchedInterestName }}
                                                                     @endif
                                                                 </span>
-                                                            @elseif ($matchedInterestName)
-                                                                <p style="margin:6px 0 0 0; font-family:Arial,Helvetica,sans-serif; font-size:11px; color:#9C6B54; line-height:1.4;">
-                                                                    Matched: {{ $matchedInterestName }}
-                                                                </p>
                                                             @endif
 
                                                             {{-- Title --}}
@@ -260,7 +245,7 @@
 
                                             {{-- Pad empty cell if odd number in row --}}
                                             @if (count($row) === 1)
-                                            <td width="272" style="width:272px;">&nbsp;</td>
+                                            <td width="272" class="card-col-spacer" style="width:272px;">&nbsp;</td>
                                             @endif
                                         </tr>
                                         @endforeach
@@ -299,7 +284,7 @@
                                             $emoji    = $emojiMap[$category] ?? '&#128197;';
                                             $label    = $category ? strtoupper(str_replace('-', ' ', $category)) : 'EVENT';
                                         @endphp
-                                        <td width="272" valign="top" style="width:272px; padding-bottom:8px; padding-right:{{ $loop->first ? '8px' : '0' }};">
+                                        <td width="272" valign="top" class="card-col" style="width:272px; padding-bottom:8px; padding-right:{{ $loop->first ? '8px' : '0' }};">
                                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background-color:#ffffff;">
                                                 <tr>
                                                     <td style="padding:0;">
@@ -366,7 +351,7 @@
 
                                         {{-- Pad empty cell if odd number in row --}}
                                         @if (count($row) === 1)
-                                        <td width="272" style="width:272px;">&nbsp;</td>
+                                        <td width="272" class="card-col-spacer" style="width:272px;">&nbsp;</td>
                                         @endif
                                     </tr>
                                     @endforeach
@@ -388,28 +373,14 @@
                         <td style="background-color:#f8fafc; border-top:1px solid #e2e8f0; border-radius:0 0 16px 16px; padding:32px 24px; text-align:center;">
 
                             {{-- Footer logo --}}
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 12px auto;">
-                                <tr>
-                                    <td style="vertical-align:middle;">
-                                        <div style="width:22px; height:22px; background-color:#F5EAE3; border:1px solid #E8D5C8; border-radius:6px; text-align:center;">
-                                            <img src="{{ url('/images/logo-icon-email.png') }}" alt="" width="12" height="12" style="display:inline-block; margin-top:5px; width:12px; height:12px;" onerror="this.style.display='none'">
-                                        </div>
-                                    </td>
-                                    <td style="vertical-align:middle; padding-left:8px;">
-                                        <span style="font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:14px; color:#1C1109;">Nearby</span>
-                                        <span style="font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:14px; color:#C4623A;">Weekly</span>
-                                    </td>
-                                </tr>
-                            </table>
+                            <img src="{{ url('/images/logo.svg') }}" alt="NearbyWeekly" width="112" height="26" style="display:block; margin:0 auto 12px auto; width:112px; height:26px; border:0;">
 
                             <p style="margin:0 0 16px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#9C6B54; line-height:1.5;">
                                 Your weekly picks, curated by interest and location.
                             </p>
 
                             <p style="margin:0 0 20px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:1.5;">
-                                <a href="{{ url('/preferences') }}" style="color:#C4623A; text-decoration:none;">Update my preferences</a>
-                                &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-                                <a href="{{ $unsubscribeUrl }}" style="color:#C4623A; text-decoration:none;">Unsubscribe</a>
+                                <a href="{{ url('/preferences') }}" style="color:#C4623A; text-decoration:none;">Manage preferences</a>
                             </p>
 
                             <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; color:#9C6B54; line-height:1.6;">

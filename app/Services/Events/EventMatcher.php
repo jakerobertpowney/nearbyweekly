@@ -119,32 +119,32 @@ class EventMatcher
         }
 
         $hoursUntilStart = max(now()->diffInHours($event->starts_at, false), 1);
-        $distanceScore = max(0, 35 - ($distanceMiles * 1.2));
-        $recencyScore = max(0, 30 - ($hoursUntilStart / 8));
+        $distanceScore = max(0, 20 - ($distanceMiles * 0.69));        // max 20 pts, zero at ~29 miles
+        $recencyScore = max(0, 20 - ($hoursUntilStart / 12));         // max 20 pts, zero at 240 hours (10 days)
         $categoryScore = 30;
         $manualBoost = (float) $event->score_manual;
 
-        // ── Popularity score (max 10 pts) ─────────────────────────────────────
+        // ── Popularity score (max 25 pts) ─────────────────────────────────────
         //
         // Two-tier formula:
         //
-        //   Tier 1 — AI baseline (0–8 pts)
+        //   Tier 1 — AI baseline (0–20 pts)
         //     Set once at ingestion by AiEventClassifier, stored as popularity_score (1–10).
         //     Reflects expected broad appeal: stadium shows score 9–10, weekly pub
         //     quizzes score 1–2.  Unclassified events default to a neutral 5 midpoint
         //     so they aren't inadvertently penalised before their job has run.
         //
-        //   Tier 2 — click engagement boost (0–2 pts)
-        //     Each unique click in the last 30 days adds 0.5 pts, capped at 2.
+        //   Tier 2 — click engagement boost (0–5 pts)
+        //     Each unique click in the last 30 days adds 1.25 pts, capped at 5.
         //     Early in the product's life this will be close to zero; as real
         //     engagement data accumulates it nudges genuinely popular events ahead
         //     of events the AI over-estimated.
         //
         $aiBase       = ($event->popularity_score ?? 5.0);            // 1.0–10.0
-        $aiScore      = min(8.0, $aiBase * 0.8);                      // scaled to 0–8 pts
+        $aiScore      = min(20.0, $aiBase * 2.0);                     // scaled to 0–20 pts
         $recentClicks = (int) ($event->recent_clicks ?? 0);
-        $clickBoost   = min(2.0, $recentClicks * 0.5);                // 0–2 pts
-        $popularityScore = min(10.0, $aiScore + $clickBoost);
+        $clickBoost   = min(5.0, $recentClicks * 1.25);               // 0–5 pts
+        $popularityScore = min(25.0, $aiScore + $clickBoost);
 
         return [
             'event'          => $event,

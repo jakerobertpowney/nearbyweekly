@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventClickController;
 use App\Http\Controllers\NewsletterPreviewController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\PostmarkWebhookController;
 use App\Http\Controllers\PreferenceController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -44,9 +45,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('events/{event}/go', EventClickController::class)->name('events.go');
 
 Route::post('webhooks/billetto', BillettoWebhookController::class)->name('webhooks.billetto');
-
-Route::get('unsubscribe/{user}', [PreferenceController::class, 'unsubscribe'])
-    ->middleware('signed')
-    ->name('preferences.unsubscribe');
+Route::post('webhooks/postmark', PostmarkWebhookController::class)->name('webhooks.postmark');
 
 require __DIR__.'/settings.php';

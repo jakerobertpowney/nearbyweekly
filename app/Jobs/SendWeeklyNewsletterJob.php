@@ -8,11 +8,11 @@ use App\Models\NewsletterItem;
 use App\Models\NewsletterRun;
 use App\Models\User;
 use App\Services\Events\NewsletterCurator;
+use App\Services\Newsletter\SubjectLineGenerator;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\URL;
 
 class SendWeeklyNewsletterJob implements ShouldQueue
 {
@@ -29,7 +29,7 @@ class SendWeeklyNewsletterJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(NewsletterCurator $curator): void
+    public function handle(NewsletterCurator $curator, SubjectLineGenerator $generator): void
     {
         $run = NewsletterRun::query()->find($this->newsletterRunId);
         $user = User::query()->find($this->userId);
@@ -82,14 +82,14 @@ class SendWeeklyNewsletterJob implements ShouldQueue
             ]);
         }
 
+        $generatedSubject = $generator->generate($user, $buckets, $newsletterContext['day_type'] ?? 'normal');
+
         Mail::to($user)->send(new WeeklyNewsletterMail(
             $user,
             $buckets,
-            URL::temporarySignedRoute('preferences.unsubscribe', now()->addDays(7), [
-                'user' => $user,
-            ]),
             $newsletterContext,
             $seasonalPicks,
+            $generatedSubject,
         ));
 
         $run->update([

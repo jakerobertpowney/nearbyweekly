@@ -29,9 +29,9 @@ class WeeklyNewsletterMail extends Mailable implements ShouldQueue
     public function __construct(
         public User $user,
         public array $matches,
-        public string $unsubscribeUrl,
         public array $newsletterContext = [],
         public array $seasonalPicks = [],
+        public ?string $generatedSubject = null,
     ) {}
 
     public function headers(): Headers
@@ -50,6 +50,10 @@ class WeeklyNewsletterMail extends Mailable implements ShouldQueue
      */
     public function envelope(): Envelope
     {
+        if (! empty($this->generatedSubject)) {
+            return new Envelope(subject: $this->generatedSubject);
+        }
+
         $dayType = $this->newsletterContext['day_type'] ?? 'normal';
 
         $subject = match ($dayType) {
@@ -59,9 +63,7 @@ class WeeklyNewsletterMail extends Mailable implements ShouldQueue
             default => "Your weekly events near {$this->user->postcode}",
         };
 
-        return new Envelope(
-            subject: $subject
-        );
+        return new Envelope(subject: $subject);
     }
 
     /**
@@ -69,8 +71,16 @@ class WeeklyNewsletterMail extends Mailable implements ShouldQueue
      */
     public function content(): Content
     {
+        $outwardCode = explode(' ', trim($this->user->postcode))[0];
+
+        $totalEvents = array_sum(array_map('count', $this->matches)) + count($this->seasonalPicks);
+
         return new Content(
             view: 'emails.newsletters.weekly',
+            with: [
+                'outwardCode' => $outwardCode,
+                'totalEvents' => $totalEvents,
+            ],
         );
     }
 }
