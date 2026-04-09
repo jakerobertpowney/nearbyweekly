@@ -6,7 +6,6 @@ use App\Exceptions\NoMatchesException;
 use App\Mail\WeeklyNewsletterMail;
 use App\Services\Events\NewsletterCurator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
 
 class NewsletterPreviewController extends Controller
 {
@@ -16,17 +15,21 @@ class NewsletterPreviewController extends Controller
     public function __invoke(Request $request, NewsletterCurator $curator): WeeklyNewsletterMail
     {
         try {
-            $matches = $curator->curate($request->user())['buckets'];
+            $result = $curator->curate($request->user());
+            $buckets = $result['buckets'];
+            $context = $result['newsletter_context'] ?? [];
+            $seasonal = $result['seasonal_picks'] ?? [];
         } catch (NoMatchesException) {
-            $matches = [];
+            $buckets = [];
+            $context = [];
+            $seasonal = [];
         }
 
         return new WeeklyNewsletterMail(
-            $request->user(),
-            $matches,
-            URL::temporarySignedRoute('preferences.unsubscribe', now()->addDays(7), [
-                'user' => $request->user(),
-            ]),
+            user: $request->user(),
+            matches: $buckets,
+            newsletterContext: $context,
+            seasonalPicks: $seasonal,
         );
     }
 }

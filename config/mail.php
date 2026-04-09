@@ -115,4 +115,22 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Markdown Mail Settings
+    |--------------------------------------------------------------------------
+    |
+    | Laravel's markdown mail renderer powers the default authentication
+    | notifications. Point it at our published mail components so the shared
+    | auth emails use Nearby Weekly branding automatically.
+    |
+    */
+
+    'markdown' => [
+        'theme' => 'nearby-weekly',
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+    ],
+
 ];

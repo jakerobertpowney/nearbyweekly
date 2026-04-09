@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginLinkController;
 use App\Http\Controllers\BillettoWebhookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventClickController;
+use App\Http\Controllers\NewsletterDemoController;
 use App\Http\Controllers\NewsletterPreviewController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PostmarkWebhookController;
@@ -17,6 +18,8 @@ Route::inertia('/', 'Welcome', [
 ])->name('home');
 
 Route::get('register', fn () => redirect()->route('onboarding.show'))->name('register');
+
+Route::get('newsletter/demo', NewsletterDemoController::class)->name('newsletter.demo');
 
 Route::get('start', [OnboardingController::class, 'show'])->name('onboarding.show');
 Route::get('start/postcode', [OnboardingController::class, 'validatePostcode'])->name('onboarding.postcode.validate');

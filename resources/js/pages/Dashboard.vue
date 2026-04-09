@@ -126,7 +126,14 @@ const panelOpen = ref(false);
                     </button>
                 </div>
 
+                <iframe
+                    v-if="selectedRun && selectedRun.id === latestRun?.id"
+                    src="/newsletter/preview"
+                    class="flex-1 w-full border-0"
+                    style="min-height: 0;"
+                />
                 <IssueView
+                    v-else
                     :run="selectedRun"
                     :issue-number="issueNumber"
                     :total-issues="allRuns.length"

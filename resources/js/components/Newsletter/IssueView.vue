@@ -64,8 +64,12 @@ const buckets = computed(() => {
         }
     }
 
-    // Remove empty buckets
-    return Object.fromEntries(Object.entries(result).filter(([, v]) => v.length > 0));
+    // Slice each bucket to 4 events, then remove empty buckets
+    return Object.fromEntries(
+        Object.entries(result)
+            .map(([key, events]) => [key, events.slice(0, 4)])
+            .filter(([, events]) => (events as NewsletterEvent[]).length > 0)
+    );
 });
 
 const bucketConfig: Record<string, { label: string; emoji: string }> = {

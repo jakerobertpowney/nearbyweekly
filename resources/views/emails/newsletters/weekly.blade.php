@@ -91,10 +91,7 @@
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td style="vertical-align:middle;">
-                                        <img src="{{ url('/images/logo.svg') }}" alt="NearbyWeekly" width="140" height="32" style="display:block; width:140px; height:32px; border:0;">
-                                    </td>
-                                    <td align="right" style="vertical-align:middle;">
-                                        <span style="font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#9C6B54;">Week of {{ now()->format('j F') }}</span>
+                                        <img src="{{ url('/images/logo.svg') }}" alt="NearbyWeekly" width="140" style="display:block; width:140px; height:auto; border:0;">
                                     </td>
                                 </tr>
                             </table>
@@ -107,7 +104,7 @@
                             <h1 style="margin:0 0 8px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:26px; line-height:1.25; color:#1C1109;">
                                 What&rsquo;s on near {{ $outwardCode }} this week
                             </h1>
-                            <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:1.6; color:#6B4535;">
+                            <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:1.6; color:#6B4535;">
                                 {{ $totalEvents }} {{ Str::plural('pick', $totalEvents) }} across this weekend, next week, and beyond.
                             </p>
                         </td>
@@ -124,7 +121,7 @@
                     @if (empty($matches))
                         <tr>
                             <td style="background-color:#ffffff; padding:20px 24px;">
-                                <p style="margin:0 0 20px 0; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:1.6; color:#6B4535;">
+                                <p style="margin:0 0 20px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:1.6; color:#6B4535;">
                                     We&rsquo;re still gathering the best events for your area. Your next weekly picks will improve as more data lands.
                                 </p>
                             </td>
@@ -167,8 +164,8 @@
                                                 $label = $matchedInterestName ? strtoupper($matchedInterestName) : ($category ? strtoupper(str_replace('-', ' ', $category)) : 'EVENT');
                                             @endphp
                                             {{-- Card cell (272px = (552 - 8px gap) / 2) --}}
-                                            <td width="272" valign="top" class="card-col" style="width:272px; padding-bottom:8px; padding-right:{{ $loop->first ? '8px' : '0' }};">
-                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background-color:#ffffff;">
+                                            <td width="272" valign="top" class="card-col" style="width:272px; padding-bottom:8px; padding-right:{{ $loop->first ? '8px' : '0' }}; vertical-align:top;">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background-color:#ffffff; height:100%;">
                                                     <tr>
                                                         <td style="padding:0;">
                                                             @if ($event->image_url)
@@ -180,63 +177,75 @@
                                                                     style="width:100%; height:140px; object-fit:cover; display:block; border-radius:16px 16px 0 0;"
                                                                 >
                                                             @else
-                                                                <div style="height:100px; background-color:#FDF7F4; text-align:center; font-size:28px; line-height:100px; color:#C4623A; border-radius:16px 16px 0 0;">
-                                                                    {!! $emoji !!}
+                                                                <div style="height:140px; background-color:#FDF7F4; text-align:center; line-height:140px; border-radius:16px 16px 0 0;">
+                                                                    <img src="{{ url('/images/logo-icon-email.png') }}" alt="" width="40" height="40" style="display:inline-block; vertical-align:middle; width:40px; height:40px; margin-top:0;">
                                                                 </div>
                                                             @endif
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td style="padding:14px;">
-
-                                                            {{-- Category badge --}}
-                                                            <span style="display:inline-block; padding:3px 8px; background-color:#F5EAE3; color:#C4623A; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:10px; letter-spacing:0.08em; text-transform:uppercase;">
-                                                                {!! $emoji !!} {{ $matchedInterestName ? strtoupper($matchedInterestName) : $label }}
-                                                            </span>
-
-                                                            {{-- Suggestion / match indicator --}}
-                                                            @if ($isSuggestion)
-                                                                {{-- "We thought you'd like" pill for non-selected interest suggestions --}}
-                                                                <span style="display:inline-block; margin-top:6px; padding:3px 8px; background-color:#FFF7ED; border:1px solid #FED7AA; color:#C2610C; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:10px; letter-spacing:0.05em;">
-                                                                    &#10024; We thought you&rsquo;d like
-                                                                    @if ($matchedInterestName)
-                                                                        &middot; {{ $matchedInterestName }}
-                                                                    @endif
-                                                                </span>
-                                                            @endif
-
-                                                            {{-- Title --}}
-                                                            <p style="margin:6px 0 8px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:14px; line-height:1.3; color:#1C1109;">
-                                                                {{ $event->title }}
-                                                            </p>
-
-                                                            {{-- Venue + date --}}
-                                                            @php $venueParts = array_filter([$event->venue_name, $event->city]); @endphp
-                                                            @if ($venueParts)
-                                                                <p style="margin:0 0 3px 0; font-family:Arial,Helvetica,sans-serif; font-size:11px; color:#6B4535; line-height:1.4;">
-                                                                    &#128205; {{ implode(', ', $venueParts) }}
-                                                                </p>
-                                                            @endif
-                                                            <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:11px; color:#6B4535; line-height:1.4;">
-                                                                &#128197; {{ $event->starts_at->format('j M, g:ia') }}
-                                                            </p>
-
-                                                            {{-- Distance chip --}}
-                                                            <span style="display:inline-block; padding:3px 8px; background-color:#f8f4f1; border-radius:20px; font-family:Arial,Helvetica,sans-serif; font-size:11px; color:#475569;">
-                                                                {{ round($match['distance_miles']) }} miles away
-                                                            </span>
-
-                                                            {{-- CTA button --}}
-                                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;">
+                                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="height:100%;">
                                                                 <tr>
-                                                                    <td>
-                                                                        <a href="{{ url('/events/' . $event->id . '/go') }}" style="display:block; padding:10px; background-color:#C4623A; color:#ffffff; text-align:center; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; border-radius:10px; text-decoration:none;">
-                                                                            Get tickets &rarr;
-                                                                        </a>
+                                                                    <td style="vertical-align:top;">
+
+                                                                        {{-- Category badge --}}
+                                                                        <span style="display:inline-block; white-space:nowrap; padding:3px 8px; background-color:#F5EAE3; color:#C4623A; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;">
+                                                                            {!! $emoji !!} {{ $matchedInterestName ? strtoupper($matchedInterestName) : $label }}
+                                                                        </span>
+
+                                                                        {{-- Suggestion / match indicator --}}
+                                                                        @if ($isSuggestion)
+                                                                            {{-- "We thought you'd like" pill for non-selected interest suggestions --}}
+                                                                            <span style="display:inline-block; margin-top:6px; padding:3px 8px; background-color:#FFF7ED; border:1px solid #FED7AA; color:#C2610C; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; letter-spacing:0.05em;">
+                                                                                &#10024; We thought you&rsquo;d like
+                                                                                @if ($matchedInterestName)
+                                                                                    &middot; {{ $matchedInterestName }}
+                                                                                @endif
+                                                                            </span>
+                                                                        @endif
+
+                                                                        {{-- Title --}}
+                                                                        <p style="margin:6px 0 8px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:16px; line-height:1.3; color:#1C1109;">
+                                                                            {{ $event->title }}
+                                                                        </p>
+
+                                                                        {{-- Venue + date --}}
+                                                                        @php $venueParts = array_filter([$event->venue_name, $event->city]); @endphp
+                                                                        @if ($venueParts)
+                                                                            <p style="margin:0 0 3px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
+                                                                                &#128205; {{ implode(', ', $venueParts) }}
+                                                                            </p>
+                                                                        @endif
+                                                                        <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
+                                                                            &#128197; {{ $event->starts_at->format('j M, g:ia') }}
+                                                                        </p>
+
+                                                                        {{-- Distance chip --}}
+                                                                        <span style="display:inline-block; padding:3px 8px; background-color:#f8f4f1; border-radius:20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#475569;">
+                                                                            {{ round($match['distance_miles']) }} miles away
+                                                                        </span>
+
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="height:12px;"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="vertical-align:bottom;">
+                                                                        {{-- CTA button --}}
+                                                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <a href="{{ url('/events/' . $event->id . '/go') }}" style="display:block; padding:12px 10px; background-color:#C4623A; color:#ffffff; text-align:center; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:16px; border-radius:10px; text-decoration:none;">
+                                                                                        Get tickets &rarr;
+                                                                                    </a>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
                                                                     </td>
                                                                 </tr>
                                                             </table>
-
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -284,8 +293,8 @@
                                             $emoji    = $emojiMap[$category] ?? '&#128197;';
                                             $label    = $category ? strtoupper(str_replace('-', ' ', $category)) : 'EVENT';
                                         @endphp
-                                        <td width="272" valign="top" class="card-col" style="width:272px; padding-bottom:8px; padding-right:{{ $loop->first ? '8px' : '0' }};">
-                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background-color:#ffffff;">
+                                        <td width="272" valign="top" class="card-col" style="width:272px; padding-bottom:8px; padding-right:{{ $loop->first ? '8px' : '0' }}; vertical-align:top;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background-color:#ffffff; height:100%;">
                                                 <tr>
                                                     <td style="padding:0;">
                                                         @if ($event->image_url)
@@ -297,52 +306,64 @@
                                                                 style="width:100%; height:140px; object-fit:cover; display:block; border-radius:16px 16px 0 0;"
                                                             >
                                                         @else
-                                                            <div style="height:100px; background-color:#FDF7F4; text-align:center; font-size:28px; line-height:100px; color:#C4623A; border-radius:16px 16px 0 0;">
-                                                                {!! $emoji !!}
+                                                            <div style="height:140px; background-color:#FDF7F4; text-align:center; line-height:140px; border-radius:16px 16px 0 0;">
+                                                                <img src="{{ url('/images/logo-icon-email.png') }}" alt="" width="40" height="40" style="display:inline-block; vertical-align:middle; width:40px; height:40px; margin-top:0;">
                                                             </div>
                                                         @endif
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="padding:14px;">
-
-                                                        {{-- Category badge --}}
-                                                        <span style="display:inline-block; padding:3px 8px; background-color:#F5EAE3; color:#C4623A; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:10px; letter-spacing:0.08em; text-transform:uppercase;">
-                                                            {!! $emoji !!} {{ $label }}
-                                                        </span>
-
-                                                        {{-- Title --}}
-                                                        <p style="margin:6px 0 8px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:14px; line-height:1.3; color:#1C1109;">
-                                                            {{ $event->title }}
-                                                        </p>
-
-                                                        {{-- Venue + date --}}
-                                                        @php $venueParts = array_filter([$event->venue_name, $event->city]); @endphp
-                                                        @if ($venueParts)
-                                                            <p style="margin:0 0 3px 0; font-family:Arial,Helvetica,sans-serif; font-size:11px; color:#6B4535; line-height:1.4;">
-                                                                &#128205; {{ implode(', ', $venueParts) }}
-                                                            </p>
-                                                        @endif
-                                                        <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:11px; color:#6B4535; line-height:1.4;">
-                                                            &#128197; {{ $event->starts_at->format('j M, g:ia') }}
-                                                        </p>
-
-                                                        {{-- Distance chip --}}
-                                                        <span style="display:inline-block; padding:3px 8px; background-color:#f8f4f1; border-radius:20px; font-family:Arial,Helvetica,sans-serif; font-size:11px; color:#475569;">
-                                                            {{ round($pick['distance_miles']) }} miles away
-                                                        </span>
-
-                                                        {{-- CTA button --}}
-                                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;">
+                                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="height:100%;">
                                                             <tr>
-                                                                <td>
-                                                                    <a href="{{ url('/events/' . $event->id . '/go') }}" style="display:block; padding:10px; background-color:#C4623A; color:#ffffff; text-align:center; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; border-radius:10px; text-decoration:none;">
-                                                                        Get tickets &rarr;
-                                                                    </a>
+                                                                <td style="vertical-align:top;">
+
+                                                                    {{-- Category badge --}}
+                                                                    <span style="display:inline-block; white-space:nowrap; padding:3px 8px; background-color:#F5EAE3; color:#C4623A; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;">
+                                                                        {!! $emoji !!} {{ $label }}
+                                                                    </span>
+
+                                                                    {{-- Title --}}
+                                                                    <p style="margin:6px 0 8px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:16px; line-height:1.3; color:#1C1109;">
+                                                                        {{ $event->title }}
+                                                                    </p>
+
+                                                                    {{-- Venue + date --}}
+                                                                    @php $venueParts = array_filter([$event->venue_name, $event->city]); @endphp
+                                                                    @if ($venueParts)
+                                                                        <p style="margin:0 0 3px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
+                                                                            &#128205; {{ implode(', ', $venueParts) }}
+                                                                        </p>
+                                                                    @endif
+                                                                    <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
+                                                                        &#128197; {{ $event->starts_at->format('j M, g:ia') }}
+                                                                    </p>
+
+                                                                    {{-- Distance chip --}}
+                                                                    <span style="display:inline-block; padding:3px 8px; background-color:#f8f4f1; border-radius:20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#475569;">
+                                                                        {{ round($pick['distance_miles']) }} miles away
+                                                                    </span>
+
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="height:12px;"></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="vertical-align:bottom;">
+                                                                    {{-- CTA button --}}
+                                                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <a href="{{ url('/events/' . $event->id . '/go') }}" style="display:block; padding:12px 10px; background-color:#C4623A; color:#ffffff; text-align:center; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:16px; border-radius:10px; text-decoration:none;">
+                                                                                    Get tickets &rarr;
+                                                                                </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
                                                                 </td>
                                                             </tr>
                                                         </table>
-
                                                     </td>
                                                 </tr>
                                             </table>
@@ -373,13 +394,13 @@
                         <td style="background-color:#f8fafc; border-top:1px solid #e2e8f0; border-radius:0 0 16px 16px; padding:32px 24px; text-align:center;">
 
                             {{-- Footer logo --}}
-                            <img src="{{ url('/images/logo.svg') }}" alt="NearbyWeekly" width="112" height="26" style="display:block; margin:0 auto 12px auto; width:112px; height:26px; border:0;">
+                            <img src="{{ url('/images/logo.svg') }}" alt="NearbyWeekly" width="112" style="display:block; margin:0 auto 12px auto; width:112px; height:auto; border:0;">
 
-                            <p style="margin:0 0 16px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#9C6B54; line-height:1.5;">
+                            <p style="margin:0 0 16px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#9C6B54; line-height:1.5;">
                                 Your weekly picks, curated by interest and location.
                             </p>
 
-                            <p style="margin:0 0 20px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:1.5;">
+                            <p style="margin:0 0 20px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:1.5;">
                                 <a href="{{ url('/preferences') }}" style="color:#C4623A; text-decoration:none;">Manage preferences</a>
                             </p>
 

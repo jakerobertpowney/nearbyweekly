@@ -69,9 +69,6 @@ async function goWithPostcode(
     }
 }
 
-// --- Preview tab ---
-const activeTab = ref<'email' | 'browser'>('email');
-
 // --- FAQ accordion ---
 const openFaq = ref<number | null>(null);
 
@@ -275,79 +272,6 @@ const rightPlacements: CardPlacement[] = [
     },
 ];
 
-// Event cards for the newsletter preview — 3 time-bucket sections × 2 cards
-const previewSections = [
-    {
-        label: '🎉 THIS WEEKEND',
-        events: [
-            {
-                emoji: '🎭',
-                category: 'Comedy',
-                title: 'Monkey Barrel Comedy Club',
-                venue: 'Old Street, EC1',
-                date: 'Sat 29 Mar',
-                dist: '1.2 miles',
-                img: '/img/landing/comedy-crowd.webp',
-            },
-            {
-                emoji: '🍕',
-                category: 'Food',
-                title: 'Borough Market Night Market',
-                venue: 'London Bridge, SE1',
-                date: 'Fri 28 Mar',
-                dist: '0.4 miles',
-                img: '/img/landing/food-market.webp',
-            },
-        ],
-    },
-    {
-        label: '🗓️ THIS WEEK',
-        events: [
-            {
-                emoji: '🎵',
-                category: 'Live Music',
-                title: 'Jazz Café Sessions',
-                venue: 'Camden, NW1',
-                date: 'Tue 1 Apr',
-                dist: '3.4 miles',
-                img: '/img/landing/jazz-cafe.webp',
-            },
-            {
-                emoji: '🧘',
-                category: 'Wellness',
-                title: 'Sunrise Yoga — Clapham',
-                venue: 'Clapham Common',
-                date: 'Wed 2 Apr',
-                dist: '2.1 miles',
-                img: '/img/landing/sunrise-yoga.webp',
-            },
-        ],
-    },
-    {
-        label: '🔜 COMING UP',
-        events: [
-            {
-                emoji: '👨‍👩‍👧',
-                category: 'Family',
-                title: 'Kew Gardens Easter Trail',
-                venue: 'Kew, TW9',
-                date: 'Sat 5 Apr',
-                dist: '5.8 miles',
-                img: '/img/landing/family-day-out.webp',
-            },
-            {
-                emoji: '🥾',
-                category: 'Outdoors',
-                title: 'Box Hill Sunset Hike',
-                venue: 'Dorking, Surrey',
-                date: 'Sun 6 Apr',
-                dist: '12 miles',
-                img: '/img/landing/hiking-trail.webp',
-            },
-        ],
-    },
-];
-
 // --- Sticky logo behaviour ---
 // heroLogoRef is the logo sitting above the hero h1.
 // Once it scrolls out of view (upward), navLogoVisible becomes true and the
@@ -423,7 +347,7 @@ onUnmounted(() => {
                             class="rounded-full px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
                             style="background: #c4623a"
                         >
-                            Build my picks
+                            Get started
                         </a>
                     </template>
                 </div>
@@ -608,7 +532,6 @@ onUnmounted(() => {
 
                 <!-- Email frame -->
                 <div
-                    v-if="activeTab === 'email'"
                     class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-300/40"
                     style="box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12)"
                 >
@@ -664,471 +587,13 @@ onUnmounted(() => {
 
                     <!-- Scrollable email body -->
                     <div class="relative">
-                        <div class="overflow-y-auto" style="max-height: 600px">
-                            <div
-                                class="px-6 py-8 sm:px-10"
-                                style="
-                                    font-family:
-                                        -apple-system, 'Helvetica Neue', Arial,
-                                        sans-serif;
-                                "
-                            >
-                                <!-- Email header -->
-                                <div class="mb-6 flex items-center gap-3">
-                                    <div
-                                        class="flex h-10 w-10 items-center justify-center rounded-xl border"
-                                        style="
-                                            background: #f5eae3;
-                                            border-color: #e8d5c8;
-                                        "
-                                    >
-                                        <svg
-                                            class="h-5 w-5"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="#C4623A"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
-                                            <path
-                                                d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"
-                                            />
-                                            <path d="M13 5v2" />
-                                            <path d="M13 17v2" />
-                                            <path d="M13 11v2" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="font-bold text-slate-900">
-                                            <span>Nearby</span>
-                                            <span style="color: #c4623a"
-                                                >Weekly</span
-                                            >
-                                        </p>
-                                        <p class="text-xs text-slate-500">
-                                            hello@nearbyweekly.co.uk · Thursday
-                                            8:00 AM
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div
-                                    class="mb-2 h-1 w-full rounded-full"
-                                    style="
-                                        background: linear-gradient(
-                                            to right,
-                                            #c4623a,
-                                            #a84e2c
-                                        );
-                                    "
-                                />
-
-                                <h2
-                                    class="mt-6 mb-1 font-heading text-2xl font-bold"
-                                    style="color: #1c1109"
-                                >
-                                    Here's what's on near SE1 this week
-                                </h2>
-                                <p class="mb-8 text-sm" style="color: #9c6b54">
-                                    6 events matched to your interests · within
-                                    12 miles
-                                </p>
-
-                                <!-- Time-bucketed event sections -->
-                                <div
-                                    v-for="section in previewSections"
-                                    :key="section.label"
-                                    class="mb-8"
-                                >
-                                    <p
-                                        class="mb-4 text-xs font-bold tracking-widest uppercase"
-                                        style="color: #c4623a"
-                                    >
-                                        {{ section.label }}
-                                    </p>
-                                    <div
-                                        class="grid grid-cols-1 gap-4 sm:grid-cols-2"
-                                    >
-                                        <div
-                                            v-for="event in section.events"
-                                            :key="event.title"
-                                            class="overflow-hidden rounded-xl bg-white shadow-sm"
-                                            style="border: 1px solid #e8d5c8"
-                                        >
-                                            <!-- Event photo -->
-                                            <div
-                                                class="relative aspect-video overflow-hidden bg-slate-100"
-                                            >
-                                                <img
-                                                    :src="event.img"
-                                                    :alt="event.title"
-                                                    class="h-full w-full object-cover"
-                                                    loading="lazy"
-                                                    style="
-                                                        filter: saturate(1.05);
-                                                    "
-                                                />
-                                                <div
-                                                    class="absolute inset-0"
-                                                    style="
-                                                        background: rgba(
-                                                            26,
-                                                            53,
-                                                            40,
-                                                            0.04
-                                                        );
-                                                    "
-                                                />
-                                                <!-- Category badge overlay -->
-                                                <div
-                                                    class="absolute top-3 left-3"
-                                                >
-                                                    <span
-                                                        class="rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm"
-                                                        style="color: #c4623a"
-                                                    >
-                                                        {{ event.emoji }}
-                                                        {{ event.category }}
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <!-- Event details -->
-                                            <div class="p-4">
-                                                <p
-                                                    class="mb-1 font-heading leading-snug font-bold"
-                                                    style="color: #1c1109"
-                                                >
-                                                    {{ event.title }}
-                                                </p>
-                                                <p
-                                                    class="text-sm"
-                                                    style="color: #9c6b54"
-                                                >
-                                                    {{ event.venue }}
-                                                </p>
-                                                <div
-                                                    class="mt-2 flex items-center gap-2"
-                                                >
-                                                    <span
-                                                        class="text-xs"
-                                                        style="color: #9c6b54"
-                                                        >{{ event.date }}</span
-                                                    >
-                                                    <span style="color: #e8d5c8"
-                                                        >·</span
-                                                    >
-                                                    <span
-                                                        class="rounded-full px-2 py-0.5 text-xs font-medium"
-                                                        style="
-                                                            background: #fdf7f4;
-                                                            color: #9c6b54;
-                                                        "
-                                                    >
-                                                        📍 {{ event.dist }}
-                                                    </span>
-                                                </div>
-                                                <a
-                                                    href="/start"
-                                                    class="mt-3 block w-full rounded-lg py-2.5 text-center text-sm font-semibold text-white transition hover:opacity-90"
-                                                    style="background: #c4623a"
-                                                >
-                                                    Get Tickets →
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Email footer -->
-                                <div
-                                    class="mt-8 border-t pt-6 text-center text-xs"
-                                    style="
-                                        border-color: #e8d5c8;
-                                        color: #9c6b54;
-                                    "
-                                >
-                                    <p>
-                                        <a
-                                            href="/preferences"
-                                            class="underline hover:opacity-70"
-                                            >Update preferences</a
-                                        >
-                                        &nbsp;·&nbsp;
-                                        <a
-                                            href="#"
-                                            class="underline hover:opacity-70"
-                                            >Unsubscribe</a
-                                        >
-                                    </p>
-                                    <p class="mt-2">
-                                        Made with ☕ somewhere in the UK
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        <iframe
+                            src="/newsletter/demo"
+                            class="w-full border-0"
+                            style="height: 600px"
+                        />
 
                         <!-- Fade-to-white gradient hint -->
-                        <div
-                            class="pointer-events-none absolute right-0 bottom-0 left-0 h-16 rounded-b-2xl"
-                            style="
-                                background: linear-gradient(
-                                    to bottom,
-                                    transparent,
-                                    rgba(255, 255, 255, 0.95)
-                                );
-                            "
-                        />
-                    </div>
-                </div>
-
-                <!-- Browser frame -->
-                <div
-                    v-else
-                    class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-300/40"
-                    style="box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12)"
-                >
-                    <!-- Browser chrome -->
-                    <div
-                        class="flex items-center gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3"
-                    >
-                        <div class="flex gap-1.5">
-                            <div class="h-3 w-3 rounded-full bg-red-400" />
-                            <div class="h-3 w-3 rounded-full bg-amber-400" />
-                            <div class="h-3 w-3 rounded-full bg-green-400" />
-                        </div>
-                        <div
-                            class="flex flex-1 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5"
-                        >
-                            <span class="text-xs text-slate-400">🔒</span>
-                            <span class="text-xs text-slate-500"
-                                >nearbyweekly.co.uk/newsletter/preview</span
-                            >
-                        </div>
-                    </div>
-
-                    <!-- Same content, browser context -->
-                    <div class="relative">
-                        <div class="overflow-y-auto" style="max-height: 600px">
-                            <div
-                                class="px-6 py-8 sm:px-10"
-                                style="background: #fdf7f4"
-                            >
-                                <div
-                                    class="mx-auto max-w-2xl rounded-2xl bg-white px-8 py-8 shadow-sm"
-                                >
-                                    <div class="mb-6 flex items-center gap-3">
-                                        <div
-                                            class="flex h-10 w-10 items-center justify-center rounded-xl border"
-                                            style="
-                                                background: #f5eae3;
-                                                border-color: #e8d5c8;
-                                            "
-                                        >
-                                            <svg
-                                                class="h-5 w-5"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="#C4623A"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                            >
-                                                <path
-                                                    d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"
-                                                />
-                                                <path d="M13 5v2" />
-                                                <path d="M13 17v2" />
-                                                <path d="M13 11v2" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <p
-                                                class="font-bold"
-                                                style="color: #1c1109"
-                                            >
-                                                <span>Nearby</span>
-                                                <span style="color: #c4623a"
-                                                    >Weekly</span
-                                                >
-                                            </p>
-                                            <p
-                                                class="text-xs"
-                                                style="color: #9c6b54"
-                                            >
-                                                Weekly picks · SE1
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        class="mb-2 h-1 w-full rounded-full"
-                                        style="
-                                            background: linear-gradient(
-                                                to right,
-                                                #c4623a,
-                                                #a84e2c
-                                            );
-                                        "
-                                    />
-
-                                    <h2
-                                        class="mt-6 mb-1 font-heading text-2xl font-bold"
-                                        style="color: #1c1109"
-                                    >
-                                        Here's what's on near SE1 this week
-                                    </h2>
-                                    <p
-                                        class="mb-8 text-sm"
-                                        style="color: #9c6b54"
-                                    >
-                                        6 events matched to your interests ·
-                                        within 12 miles
-                                    </p>
-
-                                    <div
-                                        v-for="section in previewSections"
-                                        :key="section.label"
-                                        class="mb-8"
-                                    >
-                                        <p
-                                            class="mb-4 text-xs font-bold tracking-widest uppercase"
-                                            style="color: #c4623a"
-                                        >
-                                            {{ section.label }}
-                                        </p>
-                                        <div
-                                            class="grid grid-cols-1 gap-4 sm:grid-cols-2"
-                                        >
-                                            <div
-                                                v-for="event in section.events"
-                                                :key="event.title"
-                                                class="overflow-hidden rounded-xl bg-white shadow-sm"
-                                                style="
-                                                    border: 1px solid #e8d5c8;
-                                                "
-                                            >
-                                                <div
-                                                    class="relative aspect-video overflow-hidden bg-slate-100"
-                                                >
-                                                    <img
-                                                        :src="event.img"
-                                                        :alt="event.title"
-                                                        class="h-full w-full object-cover"
-                                                        loading="lazy"
-                                                        style="
-                                                            filter: saturate(
-                                                                1.05
-                                                            );
-                                                        "
-                                                    />
-                                                    <div
-                                                        class="absolute inset-0"
-                                                        style="
-                                                            background: rgba(
-                                                                26,
-                                                                53,
-                                                                40,
-                                                                0.04
-                                                            );
-                                                        "
-                                                    />
-                                                    <div
-                                                        class="absolute top-3 left-3"
-                                                    >
-                                                        <span
-                                                            class="rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm"
-                                                            style="
-                                                                color: #c4623a;
-                                                            "
-                                                        >
-                                                            {{ event.emoji }}
-                                                            {{ event.category }}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="p-4">
-                                                    <p
-                                                        class="mb-1 font-heading leading-snug font-bold"
-                                                        style="color: #1c1109"
-                                                    >
-                                                        {{ event.title }}
-                                                    </p>
-                                                    <p
-                                                        class="text-sm"
-                                                        style="color: #9c6b54"
-                                                    >
-                                                        {{ event.venue }}
-                                                    </p>
-                                                    <div
-                                                        class="mt-2 flex items-center gap-2"
-                                                    >
-                                                        <span
-                                                            class="text-xs"
-                                                            style="
-                                                                color: #9c6b54;
-                                                            "
-                                                            >{{
-                                                                event.date
-                                                            }}</span
-                                                        >
-                                                        <span
-                                                            style="
-                                                                color: #e8d5c8;
-                                                            "
-                                                            >·</span
-                                                        >
-                                                        <span
-                                                            class="rounded-full px-2 py-0.5 text-xs font-medium"
-                                                            style="
-                                                                background: #fdf7f4;
-                                                                color: #9c6b54;
-                                                            "
-                                                            >📍
-                                                            {{
-                                                                event.dist
-                                                            }}</span
-                                                        >
-                                                    </div>
-                                                    <a
-                                                        href="/start"
-                                                        class="mt-3 block w-full rounded-lg py-2.5 text-center text-sm font-semibold text-white transition hover:opacity-90"
-                                                        style="
-                                                            background: #c4623a;
-                                                        "
-                                                    >
-                                                        Get Tickets →
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        class="mt-8 border-t pt-6 text-center text-xs"
-                                        style="
-                                            border-color: #e8d5c8;
-                                            color: #9c6b54;
-                                        "
-                                    >
-                                        <p>
-                                            <a
-                                                href="/preferences"
-                                                class="underline hover:opacity-70"
-                                                >Update preferences</a
-                                            >
-                                            &nbsp;·&nbsp;
-                                            <a
-                                                href="#"
-                                                class="underline hover:opacity-70"
-                                                >Unsubscribe</a
-                                            >
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div
                             class="pointer-events-none absolute right-0 bottom-0 left-0 h-16 rounded-b-2xl"
                             style="
@@ -1152,7 +617,7 @@ onUnmounted(() => {
                         class="inline-flex items-center gap-2 rounded-2xl px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
                         style="background: #c4623a"
                     >
-                        Build my weekly picks →
+                        Get started →
                     </a>
                 </div>
             </div>
@@ -1228,7 +693,7 @@ onUnmounted(() => {
                         class="inline-flex items-center gap-2 rounded-2xl px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
                         style="background: #c4623a"
                     >
-                        Build my weekly picks →
+                        Get started →
                     </a>
                 </div>
             </div>
@@ -1395,9 +860,8 @@ onUnmounted(() => {
                             class="text-sm leading-relaxed"
                             style="color: #6b4535"
                         >
-                            One email, every Thursday. Up to 8 events, ranked by
-                            how well they match. No ads, no promoted listings,
-                            no noise.
+                            One email, every Thursday. Up to 12 events, ranked
+                            by how well they match.
                         </p>
                     </div>
                 </div>
