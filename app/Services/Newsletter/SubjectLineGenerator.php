@@ -102,6 +102,9 @@ PROMPT;
                 return $fallback;
             }
 
+            $content = preg_replace('/^```(?:json)?\s*/i', '', trim($content));
+            $content = preg_replace('/\s*```$/', '', $content);
+
             $decoded = json_decode($content, true);
 
             if (! is_array($decoded) || empty($decoded['subject'])) {

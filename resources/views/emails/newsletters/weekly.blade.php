@@ -74,7 +74,7 @@
 
     {{-- Preview text (inbox snippet before email is opened) --}}
     <span style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; color:#f8f4f1;">
-        {{ $introLine }} &mdash; {{ $totalCount }} {{ Str::plural('event', $totalCount) }} near {{ $user->postcode }}@if ($totalCount > 0), including {{ $allMatches->first()['event']->title }}.@endif
+        {{ $totalEvents }} {{ Str::plural('pick', $totalEvents) }} near {{ $outwardCode }} this week
     </span>
 
     {{-- Outer wrapper --}}
