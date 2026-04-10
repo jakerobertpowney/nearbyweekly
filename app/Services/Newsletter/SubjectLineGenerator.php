@@ -33,38 +33,59 @@ class SubjectLineGenerator
             return $fallback;
         }
 
-        // Flatten all buckets, sort by score descending, take top 3.
+        // Flatten all buckets, sort by score descending, take top 5.
         $topEvents = collect($buckets)
             ->flatten(1)
             ->sortByDesc('score')
-            ->take(3)
+            ->take(5)
             ->values();
 
         if ($topEvents->isEmpty()) {
             return $fallback;
         }
 
-        $eventLines = $topEvents->map(function (array $match): string {
-            $event = $match['event'];
-            $date  = $event->starts_at->format('j M');
+        $outwardCode = explode(' ', trim($postcode))[0];
 
-            return "- {$event->title} ({$date})";
+        $totalCount = collect($buckets)->flatten(1)->count();
+
+        $eventLines = $topEvents->map(function (array $match): string {
+            $event    = $match['event'];
+            $venue    = $event->venue ?? 'unknown venue';
+            $category = $event->category ?? 'event';
+
+            return "- {$event->title} | {$category} | {$venue}";
         })->implode("\n");
 
         $prompt = <<<PROMPT
-You are writing the subject line for a personalised weekly events newsletter.
+You are writing the subject line for a personalised weekly events newsletter called Eventaroo.
 
-User's postcode: {$postcode}
-Day type: {$dayType}
+Inputs:
+- User's postcode area: {$outwardCode}
+- Total matched events in this newsletter: {$totalCount}
 
-Top events this week:
+Top matched events (title | category | venue):
 {$eventLines}
 
-Write a subject line that:
-- Is under 60 characters
-- References at least one specific event title or category from the list above
-- Contains no emoji and no exclamation marks
-- Feels personal and local, not generic
+Rules:
+- Write one subject line only — no explanation, no alternatives, no punctuation at the end
+- Lead with the most interesting or specific event title from the list — this does more work than any label
+- Never mention the day of the week — the email may be read days after it was sent
+- Do not use a fixed postcode prefix like "Near {$outwardCode}:" or "Your {$outwardCode}" — if you reference location at all, weave it in naturally (e.g. "happening near you" or "in {$outwardCode} this week")
+- Keep it under 50 characters where possible — subject lines are truncated on mobile
+- You may include one emoji if it naturally fits the lead event's category (e.g. 🎸 for a gig, 🎨 for an art show, 🍕 for a food event) — do not add an emoji just to add one, and never use more than one
+- Tone should be warm and editorial — like a recommendation from a friend, not a marketing blast
+- Avoid generic filler phrases like "Don't miss out", "Check this out", or "This week's picks"
+
+Examples of good subject lines:
+Inja at Joshua Brooks and 4 more things near you
+🎸 Inja at Joshua Brooks + 4 more this week
+Silverstone track day, comedy in Stockport, and more
+🎨 Three exhibitions worth leaving the house for
+
+Examples of bad subject lines:
+Your {$outwardCode} Friday: Inja at Joshua Brooks + more  ← uses day of week, postcode prefix feels robotic
+Don't miss these amazing events near you this week!  ← generic, no specificity
+🎉🎸🍕 This week in {$outwardCode}  ← emoji overload, no lead event
 
 Respond with only a JSON object in this exact format:
 {"subject": "your subject line here"}

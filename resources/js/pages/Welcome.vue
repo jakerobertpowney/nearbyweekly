@@ -156,7 +156,7 @@ const heroCards: HeroCard[] = [
         distance: '1.2 miles',
     },
     {
-        img: '/img/hero/food-market.webp',
+        img: '/img/landing/night-market.webp',
         categoryEmoji: '🍕',
         category: 'Food',
         title: 'Borough Market Night Market',
@@ -174,7 +174,7 @@ const heroCards: HeroCard[] = [
         distance: '3.4 miles',
     },
     {
-        img: '/img/hero/outdoors.webp',
+        img: '/img/landing/sunset-hike.webp',
         categoryEmoji: '🥾',
         category: 'Outdoors',
         title: 'Box Hill Sunset Hike',
@@ -201,7 +201,7 @@ const heroCards: HeroCard[] = [
         distance: '3.1 miles',
     },
     {
-        img: '/img/hero/family.webp',
+        img: '/img/landing/easter-eggs.webp',
         categoryEmoji: '👨‍👩‍👧',
         category: 'Family',
         title: 'Kew Gardens Easter Trail',
@@ -315,7 +315,7 @@ onUnmounted(() => {
                     <a
                         v-if="navLogoVisible"
                         href="/"
-                        class="absolute left-1/2 -translate-x-1/2"
+                        class="absolute left-6 md:left-1/2 md:-translate-x-1/2"
                     >
                         <img
                             src="/images/logo.svg"
@@ -439,7 +439,6 @@ onUnmounted(() => {
 
             <!-- Mobile scroll strip (hidden on desktop) -->
             <div class="mobile-cards-strip" aria-hidden="true">
-                <p class="mobile-strip-label">Swipe to see what you'd get</p>
                 <div class="mobile-strip">
                     <div
                         v-for="card in heroCards.slice(0, 5)"

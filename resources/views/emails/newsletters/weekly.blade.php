@@ -10,14 +10,21 @@
         img { border: 0; display: block; }
         a { color: #C4623A; text-decoration: none; }
         @media only screen and (max-width: 480px) {
-            .card-col {
+            .card-img-cell {
                 display: block !important;
                 width: 100% !important;
                 max-width: 100% !important;
-                padding-right: 0 !important;
+                height: 140px !important;
+                border-radius: 16px 16px 0 0 !important;
             }
-            .card-col-spacer {
-                display: none !important;
+            .card-img-placeholder {
+                width: 100% !important;
+                height: 80px !important;
+                border-radius: 16px 16px 0 0 !important;
+            }
+            .card-content-cell {
+                display: block !important;
+                width: 100% !important;
             }
         }
     </style>
@@ -140,109 +147,88 @@
                                 </td>
                             </tr>
 
-                            {{-- Cards for this bucket — 2-column grid --}}
+                            {{-- Cards for this bucket — single column, image left / content right --}}
+                            @foreach (array_slice($bucketEvents, 0, 4) as $match)
+                            @php
+                                $event    = $match['event'];
+                                $category = $event->category ?? '';
+                                $isSuggestion = ($match['match_type'] ?? 'direct') === 'suggestion';
+
+                                $matchedInterestName = ($match['display_interest_id'] ?? null) !== null
+                                    ? ($interestNames[$match['display_interest_id']] ?? null)
+                                    : null;
+
+                                $interestSlug = ($match['display_interest_id'] ?? null) !== null
+                                    ? ($interestSlugs[$match['display_interest_id']] ?? null)
+                                    : null;
+                                $emoji = $emojiMap[$interestSlug ?? $category] ?? '&#128197;';
+                                $label = $matchedInterestName ? strtoupper($matchedInterestName) : ($category ? strtoupper(str_replace('-', ' ', $category)) : 'EVENT');
+                            @endphp
                             <tr>
-                                <td style="background-color:#ffffff; padding:0 24px 12px 24px;">
-                                    @php $rows = array_chunk(array_slice($bucketEvents, 0, 4), 2); @endphp
-                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                        @foreach ($rows as $row)
+                                <td style="background-color:#ffffff; padding:0 24px 8px 24px;">
+                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0; border-radius:16px; background-color:#ffffff;">
                                         <tr>
-                                            @foreach ($row as $match)
-                                            @php
-                                                $event    = $match['event'];
-                                                $category = $event->category ?? '';
-                                                $isSuggestion = ($match['match_type'] ?? 'direct') === 'suggestion';
-
-                                                $matchedInterestName = ($match['display_interest_id'] ?? null) !== null
-                                                    ? ($interestNames[$match['display_interest_id']] ?? null)
-                                                    : null;
-
-                                                $interestSlug = ($match['display_interest_id'] ?? null) !== null
-                                                    ? ($interestSlugs[$match['display_interest_id']] ?? null)
-                                                    : null;
-                                                $emoji = $emojiMap[$interestSlug ?? $category] ?? '&#128197;';
-                                                $label = $matchedInterestName ? strtoupper($matchedInterestName) : ($category ? strtoupper(str_replace('-', ' ', $category)) : 'EVENT');
-                                            @endphp
-                                            {{-- Card cell (272px = (552 - 8px gap) / 2) --}}
-                                            <td width="272" valign="top" class="card-col" style="width:272px; padding-bottom:8px; padding-right:{{ $loop->first ? '8px' : '0' }}; vertical-align:top;">
-                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background-color:#ffffff; height:100%;">
+                                            {{-- Image cell: 160px on desktop, full-width on mobile --}}
+                                            @if ($event->image_url)
+                                            <td class="card-img-cell" width="160" valign="top" style="width:160px; padding:0; vertical-align:top; border-radius:16px 0 0 16px; background-color:#FDF7F4; background-image:url('{{ $event->image_url }}'); background-size:cover; background-position:center; background-repeat:no-repeat;"></td>
+                                            @else
+                                            <td class="card-img-cell" width="160" valign="middle" style="width:160px; padding:0; vertical-align:middle; border-radius:16px 0 0 16px; background-color:#FDF7F4; text-align:center;">
+                                                <img src="{{ url('/images/logo-icon-email.png') }}" alt="" width="40" height="40" style="display:inline-block; width:40px; height:40px; margin:0 auto;">
+                                            </td>
+                                            @endif
+                                            {{-- Content cell --}}
+                                            <td class="card-content-cell" valign="top" style="padding:14px; vertical-align:top;">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="height:100%;">
                                                     <tr>
-                                                        <td style="padding:0;">
-                                                            @if ($event->image_url)
-                                                                <img
-                                                                    src="{{ $event->image_url }}"
-                                                                    alt="{{ $event->title }}"
-                                                                    width="270"
-                                                                    height="140"
-                                                                    style="width:100%; height:140px; object-fit:cover; display:block; border-radius:16px 16px 0 0;"
-                                                                >
-                                                            @else
-                                                                <div style="height:140px; background-color:#FDF7F4; text-align:center; line-height:140px; border-radius:16px 16px 0 0;">
-                                                                    <img src="{{ url('/images/logo-icon-email.png') }}" alt="" width="40" height="40" style="display:inline-block; vertical-align:middle; width:40px; height:40px; margin-top:0;">
-                                                                </div>
+                                                        <td style="vertical-align:top;">
+
+                                                            {{-- Category badge --}}
+                                                            <span style="display:inline-block; white-space:nowrap; padding:3px 8px; background-color:#F5EAE3; color:#C4623A; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;">
+                                                                {!! $emoji !!}&nbsp;{{ $matchedInterestName ? strtoupper($matchedInterestName) : $label }}
+                                                            </span>
+
+                                                            {{-- Suggestion / match indicator --}}
+                                                            @if ($isSuggestion)
+                                                                <span style="display:inline-block; margin-top:6px; padding:3px 8px; background-color:#FFF7ED; border:1px solid #FED7AA; color:#C2610C; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; letter-spacing:0.05em;">
+                                                                    &#10024;&nbsp;We thought you&rsquo;d like{!! $matchedInterestName ? ' &middot; ' . e($matchedInterestName) : '' !!}
+                                                                </span>
                                                             @endif
+
+                                                            {{-- Title --}}
+                                                            <p style="margin:6px 0 8px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:16px; line-height:1.3; color:#1C1109;">
+                                                                {{ $event->title }}
+                                                            </p>
+
+                                                            {{-- Venue + date --}}
+                                                            @php $venueParts = array_filter([$event->venue_name, $event->city]); @endphp
+                                                            @if ($venueParts)
+                                                                <p style="margin:0 0 3px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
+                                                                    &#128205; {{ implode(', ', $venueParts) }}
+                                                                </p>
+                                                            @endif
+                                                            <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
+                                                                &#128197; {{ $event->starts_at->format('j M, g:ia') }}
+                                                            </p>
+
+                                                            {{-- Distance chip --}}
+                                                            <span style="display:inline-block; padding:3px 8px; background-color:#f8f4f1; border-radius:20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#475569;">
+                                                                {{ round($match['distance_miles']) }} miles away
+                                                            </span>
+
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="padding:14px;">
-                                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="height:100%;">
+                                                        <td style="height:12px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="vertical-align:bottom;">
+                                                            {{-- CTA button --}}
+                                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                                                 <tr>
-                                                                    <td style="vertical-align:top;">
-
-                                                                        {{-- Category badge --}}
-                                                                        <span style="display:inline-block; white-space:nowrap; padding:3px 8px; background-color:#F5EAE3; color:#C4623A; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;">
-                                                                            {!! $emoji !!} {{ $matchedInterestName ? strtoupper($matchedInterestName) : $label }}
-                                                                        </span>
-
-                                                                        {{-- Suggestion / match indicator --}}
-                                                                        @if ($isSuggestion)
-                                                                            {{-- "We thought you'd like" pill for non-selected interest suggestions --}}
-                                                                            <span style="display:inline-block; margin-top:6px; padding:3px 8px; background-color:#FFF7ED; border:1px solid #FED7AA; color:#C2610C; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; letter-spacing:0.05em;">
-                                                                                &#10024; We thought you&rsquo;d like
-                                                                                @if ($matchedInterestName)
-                                                                                    &middot; {{ $matchedInterestName }}
-                                                                                @endif
-                                                                            </span>
-                                                                        @endif
-
-                                                                        {{-- Title --}}
-                                                                        <p style="margin:6px 0 8px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:16px; line-height:1.3; color:#1C1109;">
-                                                                            {{ $event->title }}
-                                                                        </p>
-
-                                                                        {{-- Venue + date --}}
-                                                                        @php $venueParts = array_filter([$event->venue_name, $event->city]); @endphp
-                                                                        @if ($venueParts)
-                                                                            <p style="margin:0 0 3px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
-                                                                                &#128205; {{ implode(', ', $venueParts) }}
-                                                                            </p>
-                                                                        @endif
-                                                                        <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
-                                                                            &#128197; {{ $event->starts_at->format('j M, g:ia') }}
-                                                                        </p>
-
-                                                                        {{-- Distance chip --}}
-                                                                        <span style="display:inline-block; padding:3px 8px; background-color:#f8f4f1; border-radius:20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#475569;">
-                                                                            {{ round($match['distance_miles']) }} miles away
-                                                                        </span>
-
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td style="height:12px;"></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td style="vertical-align:bottom;">
-                                                                        {{-- CTA button --}}
-                                                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <a href="{{ url('/events/' . $event->id . '/go') }}" style="display:block; padding:12px 10px; background-color:#C4623A; color:#ffffff; text-align:center; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:16px; border-radius:10px; text-decoration:none;">
-                                                                                        Get tickets &rarr;
-                                                                                    </a>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </table>
+                                                                    <td>
+                                                                        <a href="{{ url('/events/' . $event->id . '/go') }}" style="display:block; padding:12px 10px; background-color:#C4623A; color:#ffffff; text-align:center; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:16px; border-radius:10px; text-decoration:none;">
+                                                                            Get tickets &rarr;
+                                                                        </a>
                                                                     </td>
                                                                 </tr>
                                                             </table>
@@ -250,17 +236,11 @@
                                                     </tr>
                                                 </table>
                                             </td>
-                                            @endforeach
-
-                                            {{-- Pad empty cell if odd number in row --}}
-                                            @if (count($row) === 1)
-                                            <td width="272" class="card-col-spacer" style="width:272px;">&nbsp;</td>
-                                            @endif
                                         </tr>
-                                        @endforeach
                                     </table>
                                 </td>
                             </tr>
+                            @endforeach
 
                         @endif
                     @endforeach
@@ -279,88 +259,72 @@
                             </td>
                         </tr>
 
-                        {{-- Seasonal cards — same 2-column layout as main buckets --}}
+                        {{-- Seasonal cards — single column, image left / content right --}}
+                        @foreach ($seasonalPicks as $pick)
+                        @php
+                            $event    = $pick['event'];
+                            $category = $event->category ?? '';
+                            $emoji    = $emojiMap[$category] ?? '&#128197;';
+                            $label    = $category ? strtoupper(str_replace('-', ' ', $category)) : 'EVENT';
+                        @endphp
                         <tr>
-                            <td style="background-color:#ffffff; padding:0 24px 12px 24px;">
-                                @php $seasonalRows = array_chunk($seasonalPicks, 2); @endphp
-                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                    @foreach ($seasonalRows as $row)
+                            <td style="background-color:#ffffff; padding:0 24px 8px 24px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0; border-radius:16px; background-color:#ffffff;">
                                     <tr>
-                                        @foreach ($row as $pick)
-                                        @php
-                                            $event    = $pick['event'];
-                                            $category = $event->category ?? '';
-                                            $emoji    = $emojiMap[$category] ?? '&#128197;';
-                                            $label    = $category ? strtoupper(str_replace('-', ' ', $category)) : 'EVENT';
-                                        @endphp
-                                        <td width="272" valign="top" class="card-col" style="width:272px; padding-bottom:8px; padding-right:{{ $loop->first ? '8px' : '0' }}; vertical-align:top;">
-                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background-color:#ffffff; height:100%;">
+                                        {{-- Image cell: 160px on desktop, full-width on mobile --}}
+                                        @if ($event->image_url)
+                                        <td class="card-img-cell" width="160" valign="top" style="width:160px; padding:0; vertical-align:top; border-radius:16px 0 0 16px; background-color:#FDF7F4; background-image:url('{{ $event->image_url }}'); background-size:cover; background-position:center; background-repeat:no-repeat;"></td>
+                                        @else
+                                        <td class="card-img-cell" width="160" valign="middle" style="width:160px; padding:0; vertical-align:middle; border-radius:16px 0 0 16px; background-color:#FDF7F4; text-align:center;">
+                                            <img src="{{ url('/images/logo-icon-email.png') }}" alt="" width="40" height="40" style="display:inline-block; width:40px; height:40px; margin:0 auto;">
+                                        </td>
+                                        @endif
+                                        {{-- Content cell --}}
+                                        <td class="card-content-cell" valign="top" style="padding:14px; vertical-align:top;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="height:100%;">
                                                 <tr>
-                                                    <td style="padding:0;">
-                                                        @if ($event->image_url)
-                                                            <img
-                                                                src="{{ $event->image_url }}"
-                                                                alt="{{ $event->title }}"
-                                                                width="270"
-                                                                height="140"
-                                                                style="width:100%; height:140px; object-fit:cover; display:block; border-radius:16px 16px 0 0;"
-                                                            >
-                                                        @else
-                                                            <div style="height:140px; background-color:#FDF7F4; text-align:center; line-height:140px; border-radius:16px 16px 0 0;">
-                                                                <img src="{{ url('/images/logo-icon-email.png') }}" alt="" width="40" height="40" style="display:inline-block; vertical-align:middle; width:40px; height:40px; margin-top:0;">
-                                                            </div>
+                                                    <td style="vertical-align:top;">
+
+                                                        {{-- Category badge --}}
+                                                        <span style="display:inline-block; white-space:nowrap; padding:3px 8px; background-color:#F5EAE3; color:#C4623A; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;">
+                                                            {!! $emoji !!}&nbsp;{{ $label }}
+                                                        </span>
+
+                                                        {{-- Title --}}
+                                                        <p style="margin:6px 0 8px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:16px; line-height:1.3; color:#1C1109;">
+                                                            {{ $event->title }}
+                                                        </p>
+
+                                                        {{-- Venue + date --}}
+                                                        @php $venueParts = array_filter([$event->venue_name, $event->city]); @endphp
+                                                        @if ($venueParts)
+                                                            <p style="margin:0 0 3px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
+                                                                &#128205; {{ implode(', ', $venueParts) }}
+                                                            </p>
                                                         @endif
+                                                        <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
+                                                            &#128197; {{ $event->starts_at->format('j M, g:ia') }}
+                                                        </p>
+
+                                                        {{-- Distance chip --}}
+                                                        <span style="display:inline-block; padding:3px 8px; background-color:#f8f4f1; border-radius:20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#475569;">
+                                                            {{ round($pick['distance_miles']) }} miles away
+                                                        </span>
+
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding:14px;">
-                                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="height:100%;">
+                                                    <td style="height:12px;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="vertical-align:bottom;">
+                                                        {{-- CTA button --}}
+                                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                                             <tr>
-                                                                <td style="vertical-align:top;">
-
-                                                                    {{-- Category badge --}}
-                                                                    <span style="display:inline-block; white-space:nowrap; padding:3px 8px; background-color:#F5EAE3; color:#C4623A; border-radius:20px; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;">
-                                                                        {!! $emoji !!} {{ $label }}
-                                                                    </span>
-
-                                                                    {{-- Title --}}
-                                                                    <p style="margin:6px 0 8px 0; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:700; font-size:16px; line-height:1.3; color:#1C1109;">
-                                                                        {{ $event->title }}
-                                                                    </p>
-
-                                                                    {{-- Venue + date --}}
-                                                                    @php $venueParts = array_filter([$event->venue_name, $event->city]); @endphp
-                                                                    @if ($venueParts)
-                                                                        <p style="margin:0 0 3px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
-                                                                            &#128205; {{ implode(', ', $venueParts) }}
-                                                                        </p>
-                                                                    @endif
-                                                                    <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6B4535; line-height:1.4;">
-                                                                        &#128197; {{ $event->starts_at->format('j M, g:ia') }}
-                                                                    </p>
-
-                                                                    {{-- Distance chip --}}
-                                                                    <span style="display:inline-block; padding:3px 8px; background-color:#f8f4f1; border-radius:20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#475569;">
-                                                                        {{ round($pick['distance_miles']) }} miles away
-                                                                    </span>
-
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style="height:12px;"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style="vertical-align:bottom;">
-                                                                    {{-- CTA button --}}
-                                                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                                                        <tr>
-                                                                            <td>
-                                                                                <a href="{{ url('/events/' . $event->id . '/go') }}" style="display:block; padding:12px 10px; background-color:#C4623A; color:#ffffff; text-align:center; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:16px; border-radius:10px; text-decoration:none;">
-                                                                                    Get tickets &rarr;
-                                                                                </a>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </table>
+                                                                <td>
+                                                                    <a href="{{ url('/events/' . $event->id . '/go') }}" style="display:block; padding:12px 10px; background-color:#C4623A; color:#ffffff; text-align:center; font-family:'Poppins','Segoe UI',Arial,sans-serif; font-weight:600; font-size:16px; border-radius:10px; text-decoration:none;">
+                                                                        Get tickets &rarr;
+                                                                    </a>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -368,17 +332,11 @@
                                                 </tr>
                                             </table>
                                         </td>
-                                        @endforeach
-
-                                        {{-- Pad empty cell if odd number in row --}}
-                                        @if (count($row) === 1)
-                                        <td width="272" class="card-col-spacer" style="width:272px;">&nbsp;</td>
-                                        @endif
                                     </tr>
-                                    @endforeach
                                 </table>
                             </td>
                         </tr>
+                        @endforeach
 
                     @endif
 
