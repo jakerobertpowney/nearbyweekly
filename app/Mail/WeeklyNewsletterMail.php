@@ -45,25 +45,12 @@ class WeeklyNewsletterMail extends Mailable implements ShouldQueue
 
     /**
      * Get the message envelope.
-     *
-     * The subject line adapts to the day of send so it always feels relevant.
      */
     public function envelope(): Envelope
     {
-        if (! empty($this->generatedSubject)) {
-            return new Envelope(subject: $this->generatedSubject);
-        }
+        $postcode = strtoupper(explode(' ', trim($this->user->postcode))[0]);
 
-        $dayType = $this->newsletterContext['day_type'] ?? 'normal';
-
-        $subject = match ($dayType) {
-            'saturday' => "Still happening near {$this->user->postcode} this weekend",
-            'sunday' => "Plan your week — events near {$this->user->postcode}",
-            'friday' => "This weekend near {$this->user->postcode} — what's on",
-            default => "Your weekly events near {$this->user->postcode}",
-        };
-
-        return new Envelope(subject: $subject);
+        return new Envelope(subject: "📍 What's on near {$postcode} this week");
     }
 
     /**

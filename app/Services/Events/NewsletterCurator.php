@@ -548,6 +548,10 @@ class NewsletterCurator
 
     /**
      * Classify a start datetime into one of the three time-buckets.
+     *
+     * Events before the upcoming Saturday (i.e. still upcoming this week)
+     * are placed in 'week' rather than falling through to 'coming_soon'.
+     * 'coming_soon' is reserved strictly for events after next Friday.
      */
     private function bucketKey(CarbonInterface $startsAt): string
     {
@@ -557,7 +561,9 @@ class NewsletterCurator
             return 'weekend';
         }
 
-        if ($startsAt->betweenIncluded($nextMonday, $nextFriday)) {
+        // Events earlier this week (before the upcoming Saturday) and events
+        // in the following Mon–Fri window both belong in the 'week' bucket.
+        if ($startsAt->lt($saturday) || $startsAt->betweenIncluded($nextMonday, $nextFriday)) {
             return 'week';
         }
 
